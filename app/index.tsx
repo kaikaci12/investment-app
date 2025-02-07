@@ -34,7 +34,7 @@ const Page = () => {
       <View style={styles.bottomContent}>
         <Pressable
           style={styles.getStartedButton}
-          onPress={() => router.push("/(start)/PlayLearn")}
+          onPress={() => router.push("/(start)/Invest")}
         >
           <Text style={styles.getStartedText}>Get Started</Text>
         </Pressable>
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
 
   // Get Started button and footer at the bottom
   bottomContent: {
-    display: "flex",
     paddingHorizontal: 30,
     paddingBottom: 30,
   },
