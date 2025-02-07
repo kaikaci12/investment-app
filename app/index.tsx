@@ -3,21 +3,12 @@ import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Font from "expo-font";
 import { ResizeMode, Video } from "expo-av";
-
+import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 const videoSource = require("../assets/videos/7579667-uhd_2160_4096_25fps.mp4");
 
 const Page = () => {
-  const customFonts = {
-    Roboto: require("../assets/fonts/Roboto-Regular.ttf"),
-  };
-
-  useEffect(() => {
-    async function loadFonts() {
-      await Font.loadAsync(customFonts);
-    }
-    loadFonts();
-  }, []);
-
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <Video
@@ -38,7 +29,10 @@ const Page = () => {
       </View>
 
       <View style={styles.bottomContent}>
-        <Pressable style={styles.getStartedButton}>
+        <Pressable
+          style={styles.getStartedButton}
+          onPress={() => router.push("/")}
+        >
           <Text style={styles.getStartedText}>Get Started</Text>
         </Pressable>
         <Text style={styles.footerText}>
@@ -95,14 +89,14 @@ const styles = StyleSheet.create({
   title: {
     color: "#FFF",
     textAlign: "center",
-    fontSize: 36,
+    fontSize: 50,
     fontWeight: "700",
   },
 
   // Get Started button and footer at the bottom
   bottomContent: {
     display: "flex",
-
+    paddingHorizontal: 30,
     paddingBottom: 30,
   },
   getStartedButton: {
