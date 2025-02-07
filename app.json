@@ -33,12 +33,19 @@
           "backgroundColor": "#ffffff"
         }
       ],
-
       [
         "expo-video",
         {
           "supportsBackgroundPlayback": true,
           "supportsPictureInPicture": true
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "/node_modules/@expo-google-fonts/roboto-mono/RobotoMono_400Regular.ttf"
+          ]
         }
       ]
     ],

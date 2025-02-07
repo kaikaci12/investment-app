@@ -11,14 +11,14 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-
+import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    Roboto: require("../assets/fonts/Roboto-Regular.ttf"),
+    RobotoMono_400Regular,
   });
 
   useEffect(() => {
@@ -27,15 +27,16 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
-
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(start)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(start)/PlayLearn"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="(start)/Invest" options={{ headerShown: false }} />
+        <Stack.Screen name="Login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>

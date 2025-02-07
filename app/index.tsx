@@ -20,7 +20,10 @@ const Page = () => {
         style={styles.video}
       />
 
-      <Pressable style={styles.loginButton}>
+      <Pressable
+        style={styles.loginButton}
+        onPress={() => router.push("/Login")}
+      >
         <Text style={styles.loginText}>Login</Text>
       </Pressable>
 
@@ -31,7 +34,7 @@ const Page = () => {
       <View style={styles.bottomContent}>
         <Pressable
           style={styles.getStartedButton}
-          onPress={() => router.push("/")}
+          onPress={() => router.push("/(start)/PlayLearn")}
         >
           <Text style={styles.getStartedText}>Get Started</Text>
         </Pressable>
