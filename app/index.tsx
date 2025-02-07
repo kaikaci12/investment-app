@@ -1,23 +1,53 @@
-import { Button, Pressable, StyleSheet, View } from "react-native";
-import React from "react";
+import { Pressable, StyleSheet, View, Text } from "react-native";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Video } from "expo-av";
+import * as Font from "expo-font";
+import { ResizeMode, Video } from "expo-av";
+
 const videoSource = require("../assets/videos/7579667-uhd_2160_4096_25fps.mp4");
 
 const Page = () => {
-  // Initialize the video player with looping and autoplay enabled
+  const customFonts = {
+    Roboto: require("../assets/fonts/Roboto-Regular.ttf"),
+  };
+
+  useEffect(() => {
+    async function loadFonts() {
+      await Font.loadAsync(customFonts);
+    }
+    loadFonts();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.login}>Login</Pressable>
+    <SafeAreaView style={styles.container}>
       <Video
-        isLooping
         source={videoSource}
-        isMuted
-        style={styles.video}
+        isLooping
         shouldPlay
+        isMuted
+        resizeMode={ResizeMode.COVER}
+        style={styles.video}
       />
-    </View>
+
+      <Pressable style={styles.loginButton}>
+        <Text style={styles.loginText}>Login</Text>
+      </Pressable>
+
+      <View style={styles.centerContent}>
+        <Text style={styles.title}>Welcome to InvestLearn</Text>
+      </View>
+
+      <View style={styles.bottomContent}>
+        <Pressable style={styles.getStartedButton}>
+          <Text style={styles.getStartedText}>Get Started</Text>
+        </Pressable>
+        <Text style={styles.footerText}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lacus,
+          fermentum arcu, placerat arcu, volutpat nec sapien. Et maecenas
+          convallis ex ut nunc.
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -29,24 +59,76 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   video: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     width: "100%",
     height: "100%",
   },
-  login: {
-    display: "flex",
-    width: 111,
-    height: 26,
-    flexDirection: "column",
-    justifyContent: "center",
-    color: "#FFF",
-    backgroundColor: "transparent",
-    textAlign: "center",
 
-    fontSize: 12,
-    fontStyle: "normal",
-    fontWeight: "700",
-    lineHeight: 12,
-    borderColor: "white",
+  // Login button at the top-right
+  loginButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderColor: "#FFF",
     borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: "transparent",
+  },
+  loginText: {
+    color: "#FFF",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+
+  // Centered Welcome text
+  centerContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    color: "#FFF",
+    textAlign: "center",
+    fontSize: 36,
+    fontWeight: "700",
+  },
+
+  // Get Started button and footer at the bottom
+  bottomContent: {
+    display: "flex",
+
+    paddingBottom: 30,
+  },
+  getStartedButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#3B82F6", // Blue background
+    paddingVertical: 12,
+    height: 82,
+    width: "100%",
+    borderRadius: 5,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#FFF",
+  },
+  getStartedText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  footerText: {
+    color: "#FFF",
+    fontSize: 10,
+    textAlign: "center",
+    paddingHorizontal: 20,
+    opacity: 0.8,
   },
 });
