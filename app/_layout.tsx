@@ -9,7 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
+import AuthProvider from "@/context/AuthProvider";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
 import { TouchableOpacity } from "react-native";
@@ -76,5 +76,9 @@ function InitialLayout() {
   );
 }
 export default function RootLayout() {
-  return <InitialLayout />;
+  return (
+    <AuthProvider>
+      <InitialLayout />;
+    </AuthProvider>
+  );
 }

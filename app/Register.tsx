@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useAuth } from "@/context/AuthProvider";
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
@@ -26,11 +27,14 @@ const RegistrationPage = () => {
       useNativeDriver: true,
     }).start();
   }, []);
-
-  const handleRegister = () => {
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const { onRegister } = useAuth();
+  const handleRegister = async () => {
+    const result = await onRegister!(username, email);
+    if (result.error) {
+      alert(result.error);
+    } else {
+      alert("User registered successfully");
+    }
   };
 
   return (

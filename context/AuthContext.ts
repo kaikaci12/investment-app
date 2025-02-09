@@ -3,11 +3,7 @@ import { createContext } from "react";
 // AuthProps Interface
 interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
-  onRegister?: (
-    email: string,
-
-    password: string
-  ) => Promise<any>;
+  onRegister?: (email: string, password: string) => Promise<any>;
   onLogin?: (email: string, password: string) => Promise<any>;
   onLogout?: () => Promise<any>;
 }
