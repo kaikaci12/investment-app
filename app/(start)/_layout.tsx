@@ -1,21 +1,32 @@
-import { Link } from "expo-router";
+import { useRoute } from "@react-navigation/native";
+import { Link, useRouter } from "expo-router";
 import { Pressable, StyleSheet, View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const index = () => {
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Choose where you’d like to start</Text>
 
-        <Pressable style={styles.optionButton}>
+        <Pressable
+          style={styles.optionButton}
+          onPress={() => router.push("/(start)/PlayLearn")}
+        >
           <Text style={styles.optionTitle}>Play & Learn</Text>
           <Text style={styles.optionDescription}>
             Learn how to invest by playing{"\n"}Fantasy learn finance
           </Text>
         </Pressable>
-
-        <Pressable style={styles.optionButton}>
+        <Link href={"/(start)/Invest"}></Link>
+        <Pressable
+          style={styles.optionButton}
+          onPress={() => {
+            router.push("/(start)/Invest");
+            console.log("Invest & Bank");
+          }}
+        >
           <Text style={styles.optionTitle}>Invest & Bank</Text>
           <Text style={styles.optionDescription}>
             Invest, bank and buy crypto with an{"\n"}InvestLearn account
