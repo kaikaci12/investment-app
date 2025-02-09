@@ -1,3 +1,4 @@
+import HeaderBar from "@/components/HeaderBar";
 import { useRoute } from "@react-navigation/native";
 import { Link, useRouter } from "expo-router";
 import { Pressable, StyleSheet, View, Text, ScrollView } from "react-native";
@@ -10,10 +11,7 @@ const index = () => {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Choose where you’d like to start</Text>
 
-        <Pressable
-          style={styles.optionButton}
-          onPress={() => router.push("/(start)/PlayLearn")}
-        >
+        <Pressable style={styles.optionButton}>
           <Text style={styles.optionTitle}>Play & Learn</Text>
           <Text style={styles.optionDescription}>
             Learn how to invest by playing{"\n"}Fantasy learn finance
@@ -23,7 +21,7 @@ const index = () => {
         <Pressable
           style={styles.optionButton}
           onPress={() => {
-            router.push("/(start)/Invest");
+            router.push("/(tabs)");
             console.log("Invest & Bank");
           }}
         >

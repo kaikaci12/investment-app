@@ -28,7 +28,9 @@ const Login = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <Link href={"/Register"}>Don't have an account? Sign up</Link>
+      <Link style={styles.register} href={"/Register"}>
+        Don't have an account? Sign up
+      </Link>
     </View>
   );
 };
@@ -69,5 +71,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  register: {
+    color: "#007BFF",
+    marginTop: 20,
   },
 });
