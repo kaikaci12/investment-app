@@ -1,23 +1,38 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import LogoutModal from "./Logout"; // Ensure correct path
 
 const HeaderBar = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={styles.container}>
+      {modalVisible && (
+        <LogoutModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+      )}
+
       <View style={styles.header}>
         <Image
-          source={{ uri: "/assets/images/avatar.png" }}
+          source={require("@/assets/images/avatar.png")} // Adjusted to require() for static images
           style={styles.avatar}
         />
         <View style={styles.headerContent}>
           <Text style={styles.playLearn}>Play & Learn ▼</Text>
-          <Text style={styles.amount}>€999, 139</Text>
+          <Text style={styles.amount}>€999,139</Text>
         </View>
         <View style={styles.icons}>
           <Ionicons name="search" size={24} color="#fff" style={styles.icon} />
-          <Ionicons name="menu" size={24} color="#fff" style={styles.icon} />
+          <Ionicons
+            name="menu"
+            onPress={() => setModalVisible(true)}
+            size={24}
+            color="#fff"
+            style={styles.icon}
+          />
         </View>
       </View>
 

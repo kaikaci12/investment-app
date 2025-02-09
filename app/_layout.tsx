@@ -9,7 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import AuthProvider from "@/context/AuthProvider";
+import AuthProvider, { useAuth } from "@/context/AuthProvider";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
 import { TouchableOpacity } from "react-native";
@@ -19,6 +19,7 @@ SplashScreen.preventAutoHideAsync();
 
 function InitialLayout() {
   const router = useRouter();
+  const { authState } = useAuth();
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     RobotoMono_400Regular,
@@ -28,7 +29,10 @@ function InitialLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+    if (authState?.authenticated) {
+      router.push("/(tabs)");
+    }
+  }, [loaded, router, authState]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -78,7 +82,7 @@ function InitialLayout() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <InitialLayout />;
+      <InitialLayout />
     </AuthProvider>
   );
 }

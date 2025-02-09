@@ -12,7 +12,7 @@ import {
   Platform,
 } from "react-native";
 import { useAuth } from "@/context/AuthProvider";
-
+import { Alert } from "react-native";
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -29,12 +29,14 @@ const RegistrationPage = () => {
   }, []);
   const { onRegister } = useAuth();
   const handleRegister = async () => {
-    const result = await onRegister!(username, email);
-    if (result.error) {
-      alert(result.error);
-    } else {
-      alert("User registered successfully");
+    if (password !== confirmPassword) {
+      return Alert.alert("Error", "Passwords do not match");
     }
+    const result = await onRegister!(email, password);
+    if (result.error) {
+      return Alert.alert("Error", result.error.message);
+    }
+    return;
   };
 
   return (
