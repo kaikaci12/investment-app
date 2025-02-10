@@ -11,17 +11,20 @@ const index = () => {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Choose where you’d like to start</Text>
 
-        <Pressable style={styles.optionButton}>
+        <Pressable
+          style={styles.optionButton}
+          onPress={() => router.push("/PlayLearn")}
+        >
           <Text style={styles.optionTitle}>Play & Learn</Text>
           <Text style={styles.optionDescription}>
             Learn how to invest by playing{"\n"}Fantasy learn finance
           </Text>
         </Pressable>
-        <Link href={"/(start)/Invest"}></Link>
+
         <Pressable
           style={styles.optionButton}
           onPress={() => {
-            router.push("/(tabs)");
+            router.push("/Login");
             console.log("Invest & Bank");
           }}
         >

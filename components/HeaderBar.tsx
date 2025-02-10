@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import LogoutModal from "./Logout"; // Ensure correct path
+import { useAuth } from "@/context/AuthProvider";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const HeaderBar = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const { authState } = useAuth();
+
   return (
     <View style={styles.container}>
-      {modalVisible && (
+      {modalVisible && authState?.authenticated && (
         <LogoutModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
@@ -40,6 +44,40 @@ const HeaderBar = () => {
         <Text style={styles.navLink}>Stats</Text>
         <Text style={styles.navLink}>Portfolio</Text>
         <Text style={styles.navLink}>Risk</Text>
+      </View>
+      <View style={styles.performanceContainer}>
+        <View style={styles.performance}>
+          <Text style={styles.performanceText}>All time performance</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign name="arrowup" size={24} color="green" />
+            <Text
+              style={{
+                color: "green",
+                fontSize: 20,
+                fontWeight: "bold",
+                marginLeft: 5,
+              }}
+            >
+              +0.11%
+            </Text>
+          </View>
+        </View>
+        <View style={styles.performance}>
+          <Text style={styles.performanceText}>All time performance</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign name="arrowdown" size={24} color="red" />
+            <Text
+              style={{
+                color: "red",
+                fontSize: 20,
+                fontWeight: "bold",
+                marginLeft: 5,
+              }}
+            >
+              +0.11%
+            </Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -134,5 +172,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
     textDecorationLine: "underline",
+  },
+  performanceContainer: {
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  performance: {
+    borderRadius: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.24)",
+    width: 154,
+    height: 101,
+  },
+  performanceText: {
+    color: "#FFF",
+    marginTop: 10,
+    textAlign: "center",
+    fontFamily: "Roboto",
+    fontSize: 13,
+
+    fontWeight: "400",
   },
 });

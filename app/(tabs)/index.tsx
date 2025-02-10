@@ -7,6 +7,10 @@ import { ThemedView } from "@/components/ThemedView";
 import { View } from "react-native";
 import HeaderBar from "@/components/HeaderBar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect } from "react";
+import { useAuth } from "@/context/AuthProvider";
+import { router } from "expo-router";
+
 export default function HomeScreen() {
   return (
     <View style={styles.container}>

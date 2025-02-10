@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "@/context/AuthProvider";
+import { router, useRouter } from "expo-router";
 
 interface LogoutModalProps {
   modalVisible: boolean;
@@ -9,13 +10,12 @@ interface LogoutModalProps {
 
 const LogoutModal = ({ modalVisible, setModalVisible }: LogoutModalProps) => {
   const { onLogout } = useAuth();
-
+  const router = useRouter();
   const handleLogout = async () => {
     const result = await onLogout!();
-    if (result.success) {
-      alert("Logout Successful");
-      setModalVisible(false);
-    }
+    setModalVisible(false);
+    alert("Logout Successful");
+    router.push("/");
   };
 
   return (

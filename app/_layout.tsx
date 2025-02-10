@@ -31,6 +31,8 @@ function InitialLayout() {
     }
     if (authState?.authenticated) {
       router.push("/(tabs)");
+    } else {
+      router.push("/");
     }
   }, [loaded, router, authState]);
 

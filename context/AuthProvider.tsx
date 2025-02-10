@@ -84,7 +84,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
   const logOut = async () => {
     try {
-      await signOut(auth);
+      const result = await signOut(auth);
       setAuthState({
         token: null,
         authenticated: false,
