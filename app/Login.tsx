@@ -14,61 +14,57 @@ const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { onLogin } = useAuth();
   const handleLogin = async () => {
-    const { onLogin } = useAuth();
-    const result = await onLogin!(email, password);
-    if (result.error) {
-      alert(result.error);
-      console.log(result.error);
-    }
-    if (result.success) {
-      alert("Login Successful");
+    try {
+      await onLogin!(email, password);
+      alert("Logged in successfully");
       router.push("/(tabs)");
+    } catch (error: any) {
+      alert(error.message);
     }
-
-    return (
-      <ImageBackground
-        source={{ uri: "https://source.unsplash.com/featured/?nature" }}
-        style={styles.background}
-      >
-        <View style={styles.overlay}>
-          <View style={styles.container}>
-            <Text style={styles.title}>Welcome Back!</Text>
-            <Text style={styles.subtitle}>Login to continue</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="#aaa"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#aaa"
-              secureTextEntry
-              autoCapitalize="none"
-              value={password}
-              onChangeText={setPassword}
-            />
-
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-
-            <Link style={styles.register} href="/Register">
-              Don't have an account?{" "}
-              <Text style={styles.signUpText}>Sign up</Text>
-            </Link>
-          </View>
-        </View>
-      </ImageBackground>
-    );
   };
+  return (
+    <ImageBackground
+      source={{ uri: "https://source.unsplash.com/featured/?nature" }}
+      style={styles.background}
+    >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Welcome Back!</Text>
+          <Text style={styles.subtitle}>Login to continue</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#aaa"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#aaa"
+            secureTextEntry
+            autoCapitalize="none"
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          <Link style={styles.register} href="/Register">
+            Don't have an account?{" "}
+            <Text style={styles.signUpText}>Sign up</Text>
+          </Link>
+        </View>
+      </View>
+    </ImageBackground>
+  );
 };
 
 export default Login;

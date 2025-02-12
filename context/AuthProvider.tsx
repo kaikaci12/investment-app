@@ -10,7 +10,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  signInWithPopup,
 } from "firebase/auth";
 import AuthContext from "./AuthContext";
 
@@ -56,9 +55,9 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         token,
         authenticated: true,
       });
-      await SecureStore.setItemAsync(TOKEN_KEY, token);
+      console.log("User registered successfully, Token:", token);
     } catch (error) {
-      console.error("Registration error:", error);
+      throw new Error("Something Went Wrong");
     }
   };
 
@@ -70,15 +69,15 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         password
       );
       const user = userCredential.user;
+
       const token = await user.getIdToken();
       setAuthState({
         token,
         authenticated: true,
       });
       console.log("User logged in successfully, Token:", token);
-      await SecureStore.setItemAsync(TOKEN_KEY, token);
-    } catch (error) {
-      throw new Error("Invalid credentials");
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   };
 
@@ -89,6 +88,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         token: null,
         authenticated: false,
       });
+      console.log(result);
       console.log("User logged out successfully");
       await SecureStore.deleteItemAsync(TOKEN_KEY);
     } catch (error) {

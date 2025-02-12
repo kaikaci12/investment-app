@@ -29,25 +29,28 @@ function InitialLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    if (authState?.authenticated) {
-      router.push("/(tabs)");
-    } else {
-      router.push("/");
-    }
+    // if (authState?.authenticated) {
+    //   router.push("/(tabs)");
+    // } else {
+    //   router.push("/");
+    // }
   }, [loaded, router, authState]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(start)" options={{ headerShown: false }} />
-
+        <Stack.Screen
+          name="(start)/PlayLearn"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen
           name="Login"
           options={{
             headerTitle: "",
-            headerShadowVisible: false,
-            headerBackTitle: "",
+
+            headerBackTitle: "hello",
 
             headerLeft: () => {
               return (

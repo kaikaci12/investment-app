@@ -30,13 +30,15 @@ const RegistrationPage = () => {
   const { onRegister } = useAuth();
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      return Alert.alert("Error", "Passwords do not match");
+      Alert.alert("Error", "Passwords do not match");
     }
     const result = await onRegister!(email, password);
     if (result.error) {
-      return Alert.alert("Error", result.error.message);
+      Alert.alert("Error", result.error.message);
     }
-    return;
+    if (result.user) {
+      Alert.alert("Error", result.error.message);
+    }
   };
 
   return (
