@@ -19,7 +19,12 @@ const Page = () => {
         resizeMode={ResizeMode.COVER}
         style={styles.video}
       />
-
+      <Pressable
+        style={styles.registerButton}
+        onPress={() => router.push("/Register")}
+      >
+        <Text style={styles.loginText}>Sign up</Text>
+      </Pressable>
       <Pressable
         style={styles.loginButton}
         onPress={() => router.push("/Login")}
@@ -34,7 +39,7 @@ const Page = () => {
       <View style={styles.bottomContent}>
         <Pressable
           style={styles.getStartedButton}
-          onPress={() => router.push("/(start)/Invest")}
+          onPress={() => router.push("/(start)/PlayLearn")}
         >
           <Text style={styles.getStartedText}>Get Started</Text>
         </Pressable>
@@ -70,6 +75,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderColor: "#FFF",
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: "transparent",
+  },
+  registerButton: {
+    position: "absolute",
+    top: 20,
+    left: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderColor: "#FFF",

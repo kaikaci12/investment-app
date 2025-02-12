@@ -12,10 +12,10 @@ const LogoutModal = ({ modalVisible, setModalVisible }: LogoutModalProps) => {
   const { onLogout } = useAuth();
   const router = useRouter();
   const handleLogout = async () => {
-    const result = await onLogout!();
+    await onLogout!();
     setModalVisible(false);
     alert("Logout Successful");
-    router.push("/");
+    router.push("/Login");
   };
 
   return (

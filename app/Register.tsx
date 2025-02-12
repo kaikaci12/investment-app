@@ -32,12 +32,10 @@ const RegistrationPage = () => {
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
     }
-    const result = await onRegister!(email, password);
-    if (result.error) {
-      Alert.alert("Error", result.error.message);
-    }
-    if (result.user) {
-      Alert.alert("Error", result.error.message);
+    try {
+      await onRegister!(email, password);
+    } catch (error) {
+      alert("Something Went Wrong");
     }
   };
 

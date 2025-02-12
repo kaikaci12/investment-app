@@ -44,13 +44,15 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
+
         password
       );
       const user = userCredential.user;
       console.log("User registered:", user);
+      console.log("Username", user.displayName);
 
       const token = await user.getIdToken();
-
+      SecureStore.setItem(TOKEN_KEY, token);
       setAuthState({
         token,
         authenticated: true,
