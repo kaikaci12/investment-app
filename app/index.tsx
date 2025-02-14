@@ -5,9 +5,17 @@ import * as Font from "expo-font";
 import { ResizeMode, Video } from "expo-av";
 import { Link } from "expo-router";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/context/AuthProvider";
 const videoSource = require("../assets/videos/7579667-uhd_2160_4096_25fps.mp4");
 
 const Page = () => {
+  const { authState } = useAuth();
+  useEffect(() => {
+    console.log(authState);
+    if (authState?.authenticated) {
+      router.push("/(tabs)");
+    }
+  }, []);
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>

@@ -14,13 +14,13 @@ export async function GET(request: any) {
     //   }
     // );
     // const result = await res.data.data;
-    return Response.json(data);
+    return Response.json(CryptoData);
   } catch (error) {
     console.log(error);
     return Response.error();
   }
 }
-const data = [
+export const CryptoData = [
   {
     id: 1,
     name: "Bitcoin",

@@ -57,6 +57,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         token,
         authenticated: true,
       });
+
       console.log("User registered successfully, Token:", token);
     } catch (error) {
       throw new Error("Something Went Wrong");
@@ -77,6 +78,8 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         token,
         authenticated: true,
       });
+
+      SecureStore.setItem(TOKEN_KEY, token);
       console.log("User logged in successfully, Token:", token);
     } catch (error: any) {
       throw new Error(error.message);

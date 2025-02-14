@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Link, router, Stack, useRouter } from "expo-router";
+import { Text } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -14,9 +15,10 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
+const TOKEN_KEY = "my-jwt";
 function InitialLayout() {
   const router = useRouter();
   const { authState } = useAuth();
@@ -29,7 +31,8 @@ function InitialLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    if (authState?.authenticated) {
+    router.push("/(tabs)");
+    if (authState?.authenticated || authState?.token) {
       router.push("/(tabs)");
     } else {
       router.push("/");
@@ -74,10 +77,7 @@ function InitialLayout() {
             },
           }}
         />
-        <Stack.Screen
-          name="(tabs)/crypto/cryptoItem/[id].tsx"
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
