@@ -21,8 +21,19 @@ import { useAuth } from "@/context/AuthProvider";
 import { router } from "expo-router";
 import { Card, Title } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
+import { collection, getDoc, getDocs } from "firebase/firestore";
 
+import { db } from "@/firebaseConfig";
 export default function HomeScreen() {
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getDocs(collection(db, "users"));
+      console.log(user.docs);
+    };
+
+    fetchUser();
+  }, []);
+
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 

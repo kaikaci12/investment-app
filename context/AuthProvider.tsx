@@ -72,6 +72,9 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         transactions: [],
         balance: 0,
       });
+      if (docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      }
     } catch (error: any) {
       throw new Error(error.message);
     }
