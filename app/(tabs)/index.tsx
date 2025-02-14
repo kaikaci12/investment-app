@@ -25,6 +25,7 @@ import { Ionicons } from "@expo/vector-icons";
 export default function HomeScreen() {
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
   const transactions = [
     { date: "6.3.2024, 13:36:43", amount: "87€", type: "Add money" },
     { date: "6.3.2024, 13:36:43", amount: "416€", type: "Add money" },

@@ -1,19 +1,14 @@
 import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { CryptoData } from "../api/listings+api";
-import { CryptoDataWithLogo } from "../api/info+api"; // Your actual datas
+import data from "@/crypto.json";
 import { ScrollView, StyleSheet, Text, View, Image } from "react-native";
 
 const Crypto = () => {
-  const combinedData = CryptoData?.map((crypto) => {
-    const logo = CryptoDataWithLogo[1].logo;
-    return [{ ...crypto, logo: logo }];
-  });
-
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Latest Crypto</Text>
-      {CryptoData?.map((crypto) => {
+      {data?.map((crypto) => {
         return (
           <Link
             href={{
@@ -33,34 +28,6 @@ const Crypto = () => {
                 <View>
                   <Text style={styles.cryptoName}>{crypto.name}</Text>
                   <Text style={styles.cryptoSymbol}>{crypto.symbol}</Text>
-                </View>
-              </View>
-              <View style={styles.cryptoPrice}>
-                <Text style={styles.cryptoValue}>
-                  {crypto.quote.USD.price.toFixed(2)} €
-                </Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Ionicons
-                    name={
-                      crypto.quote.USD.percent_change_1h > 0
-                        ? "caret-up"
-                        : "caret-down"
-                    }
-                    size={16}
-                    color={
-                      crypto.quote.USD.percent_change_1h > 0 ? "green" : "red"
-                    }
-                  />
-                  <Text
-                    style={{
-                      color:
-                        crypto.quote.USD.percent_change_1h > 0
-                          ? "green"
-                          : "red",
-                    }}
-                  >
-                    {crypto.quote.USD.percent_change_1h.toFixed(2)} %
-                  </Text>
                 </View>
               </View>
             </View>

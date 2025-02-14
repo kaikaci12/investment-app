@@ -36,6 +36,7 @@ const RegistrationPage = () => {
       await onRegister!(email, password);
     } catch (error) {
       alert("Something Went Wrong");
+      console.log(error);
     }
   };
 

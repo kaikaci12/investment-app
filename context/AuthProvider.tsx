@@ -12,6 +12,8 @@ import {
   signOut,
 } from "firebase/auth";
 import AuthContext from "./AuthContext";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
 const TOKEN_KEY = "my-jwt";
 
@@ -19,9 +21,11 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     authenticated: boolean | null;
+    user: any;
   }>({
     token: null,
     authenticated: null,
+    user: null,
   });
 
   useEffect(() => {
@@ -29,6 +33,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       if (token) {
         setAuthState({
+          user: null,
           token,
           authenticated: true,
         });
@@ -54,13 +59,21 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       const token = await user.getIdToken();
       SecureStore.setItem(TOKEN_KEY, token);
       setAuthState({
+        user,
         token,
         authenticated: true,
       });
 
-      console.log("User registered successfully, Token:", token);
-    } catch (error) {
-      throw new Error("Something Went Wrong");
+      console.log("User registered successfully", user);
+      const docRef = await addDoc(collection(db, "users"), {
+        username: user.displayName || "johndoe",
+        email: user.email,
+        avatarUrl: user.photoURL || "/assets/images/avatar.png",
+        transactions: [],
+        balance: 0,
+      });
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   };
 
@@ -75,6 +88,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
       const token = await user.getIdToken();
       setAuthState({
+        user,
         token,
         authenticated: true,
       });
@@ -90,6 +104,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     try {
       const result = await signOut(auth);
       setAuthState({
+        user: null,
         token: null,
         authenticated: false,
       });

@@ -31,8 +31,8 @@ function InitialLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    router.push("/(tabs)");
-    if (authState?.authenticated || authState?.token) {
+
+    if (authState?.authenticated) {
       router.push("/(tabs)");
     } else {
       router.push("/");
