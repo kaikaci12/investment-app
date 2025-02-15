@@ -28,9 +28,9 @@ function InitialLayout() {
   useEffect(() => {
     if (loaded && authState?.authenticated !== null) {
       if (authState?.authenticated) {
-        router.replace("/(tabs)"); // Replace prevents going back
+        router.replace("/(tabs)");
       } else {
-        router.replace("/Login");
+        router.replace("/");
       }
       setReady(true);
     }

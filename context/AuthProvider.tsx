@@ -29,18 +29,45 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   });
 
   useEffect(() => {
-    const loadToken = async () => {
+    const loadUser = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      if (token) {
+      if (!token) {
+        setAuthState({
+          user: null,
+          token: null,
+          authenticated: false,
+        });
+        return;
+      }
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
         setAuthState({
           user: null,
           token,
-          authenticated: true,
+          authenticated: false,
         });
-        console.log("Stored token loaded:", token);
+        return;
       }
+      const docRef = doc(db, "users", currentUser.uid);
+      const userDoc = await getDoc(docRef);
+      if (!userDoc.exists()) {
+        console.log("user not found in database");
+        setAuthState({
+          user: null,
+          token,
+          authenticated: false,
+        });
+        return;
+      }
+      const userData = userDoc.data();
+      setAuthState({
+        user: { ...currentUser, ...userData },
+        token,
+        authenticated: true,
+      });
     };
-    loadToken();
+
+    loadUser();
   }, []);
 
   const register = async (email: string, password: string) => {
@@ -97,16 +124,21 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         password
       );
       const user = userCredential.user;
-
       const token = await user.getIdToken();
-      setAuthState({
-        user,
-        token,
-        authenticated: true,
-      });
+      const docRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(docRef);
 
-      SecureStore.setItem(TOKEN_KEY, token);
-      console.log("User logged in successfully, Token:", token);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setAuthState({
+          user: { ...user, ...userData },
+          token,
+          authenticated: true,
+        });
+        SecureStore.setItem(TOKEN_KEY, token);
+      } else {
+        throw new Error("User profile not found in database.");
+      }
     } catch (error: any) {
       throw new Error(error.message);
     }
@@ -114,15 +146,15 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
   const logOut = async () => {
     try {
-      const result = await signOut(auth);
+      await SecureStore.deleteItemAsync(TOKEN_KEY);
+      await signOut(auth);
       setAuthState({
         user: null,
         token: null,
         authenticated: false,
       });
-      console.log(result);
+
       console.log("User logged out successfully");
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
     } catch (error) {
       console.log("Logout error:", error);
     }
