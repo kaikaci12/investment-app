@@ -25,10 +25,13 @@ import { collection, getDoc, getDocs } from "firebase/firestore";
 
 import { db } from "@/firebaseConfig";
 export default function HomeScreen() {
+  const [userProfile, setUserProfile] = useState<any>();
+  const { authState } = useAuth();
   useEffect(() => {
-    const fetchUser = async () => {
-      const user = await getDocs(collection(db, "users"));
-      console.log(user.docs);
+    const fetchUser = () => {
+      if (authState?.authenticated) {
+        setUserProfile(authState.user);
+      }
     };
 
     fetchUser();
@@ -51,12 +54,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <HeaderBar />
+      <HeaderBar user={userProfile} />
       <View style={{ padding: 20 }}>
         <Card style={styles.card}>
           <Card.Content>
             <Text style={styles.label}>Cash Balance</Text>
-            <Text style={styles.amount}>700,000</Text>
+            <Text style={styles.amount}>{userProfile?.balance}</Text>
           </Card.Content>
         </Card>
 

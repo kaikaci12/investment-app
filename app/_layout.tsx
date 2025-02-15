@@ -22,31 +22,34 @@ function InitialLayout() {
   const { authState } = useAuth();
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({ RobotoMono_400Regular });
-  const [ready, setReady] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Handle redirection based on authentication
+  // Handle redirection based on authentication and ensure it happens after mounting
   useEffect(() => {
-    if (loaded && authState?.authenticated !== null) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && loaded && authState?.authenticated !== null) {
       if (authState?.authenticated) {
         router.replace("/(tabs)");
       } else {
         router.replace("/");
       }
-      setReady(true);
     }
-  }, [loaded, authState?.authenticated]);
+  }, [mounted, loaded, authState?.authenticated]);
 
   useEffect(() => {
-    if (loaded && ready) {
+    if (loaded && mounted) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, ready]);
+  }, [loaded, mounted]);
 
-  if (!loaded || !ready) {
+  if (!loaded || !mounted) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-100">
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#6200ea" />
-        <Text className="mt-4 text-lg font-semibold text-gray-600">
+        <Text style={{ marginTop: 16, fontSize: 18, color: "#6b7280" }}>
           Loading, please wait...
         </Text>
       </View>
@@ -59,7 +62,6 @@ function InitialLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="Login" options={{ headerShown: false }} />
         <Stack.Screen name="Register" options={{ headerShown: false }} />
-
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />

@@ -5,11 +5,10 @@ import LogoutModal from "./Logout"; // Ensure correct path
 import { useAuth } from "@/context/AuthProvider";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as SecureStore from "expo-secure-store";
-const HeaderBar = () => {
+const HeaderBar = ({ user }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const { authState } = useAuth();
-  const userName = authState?.token;
 
   return (
     <View style={styles.container}>
@@ -21,10 +20,13 @@ const HeaderBar = () => {
       )}
 
       <View style={styles.header}>
-        <Image
-          source={require("@/assets/images/avatar.png")} // Adjusted to require() for static images
-          style={styles.avatar}
-        />
+        <View>
+          <Image
+            source={require("@/assets/images/avatar.png")} // Adjusted to require() for static images
+            style={styles.avatar}
+          />
+          <Text style={styles.performanceText}>{user.username}</Text>
+        </View>
 
         <View style={styles.icons}>
           <Ionicons name="search" size={24} color="#fff" style={styles.icon} />
