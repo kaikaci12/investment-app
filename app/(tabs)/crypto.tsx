@@ -12,7 +12,7 @@ const Crypto = () => {
         return (
           <Link
             href={{
-              pathname: "/crypto/[id]",
+              pathname: `/crypto/[id]`,
               params: { id: crypto.id },
             }}
             key={crypto.id}

@@ -2,17 +2,17 @@ import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 import React, { useState } from "react";
 import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-
+import { useAuth } from "@/context/AuthProvider";
+import { auth } from "@/firebaseConfig";
+import { db } from "@/firebaseConfig";
 const Transactions = () => {
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
-
-  const auth = getAuth();
-  const db = getFirestore();
+  const { authState } = useAuth();
 
   const handleTransaction = async () => {
     try {
-      const currentUser = auth.currentUser;
+      const currentUser = authState?.user;
       if (!currentUser) {
         console.log("No user authenticated");
         return;
@@ -32,7 +32,6 @@ const Transactions = () => {
         return;
       }
 
-      // Fetch sender and recipient balances and update them
       const recipientDoc = await getDoc(recipientDocRef);
       const senderDoc = await getDoc(senderDocRef);
 

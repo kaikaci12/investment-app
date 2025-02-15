@@ -8,7 +8,6 @@
     "slug": "bitcoin",
     "logo": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     "subreddit": "bitcoin",
-
     "notice": "",
     "tags": [],
     "tag-names": [],
@@ -23,7 +22,15 @@
     "self_reported_circulating_supply": null,
     "self_reported_tags": null,
     "self_reported_market_cap": null,
-    "infinite_supply": false
+    "infinite_supply": false,
+    "price": 66750.48,
+    "market_cap": 1310000000000,
+    "volume_24h": 75693606050.91,
+    "circulating_supply": 19645193,
+    "total_supply": 21000000,
+    "max_supply": 21000000,
+    "price_change_24h": 2.35,
+    "price_change_percentage_24h": 0.0035
   },
   {
     "id": 825,
@@ -90,7 +97,15 @@
     "self_reported_circulating_supply": null,
     "self_reported_tags": null,
     "self_reported_market_cap": null,
-    "infinite_supply": true
+    "infinite_supply": true,
+    "price": 1.00048841,
+    "market_cap": 100044694548.97,
+    "volume_24h": 138946065853.46,
+    "circulating_supply": 100044694548.97,
+    "total_supply": 103800078701.88,
+    "max_supply": null,
+    "price_change_24h": -0.01,
+    "price_change_percentage_24h": -0.01
   },
   {
     "id": 1027,
@@ -115,7 +130,15 @@
     "self_reported_circulating_supply": null,
     "self_reported_tags": null,
     "self_reported_market_cap": null,
-    "infinite_supply": true
+    "infinite_supply": true,
+    "price": 3698.38,
+    "market_cap": 444000000000,
+    "volume_24h": 31574788707.07,
+    "circulating_supply": 120127131.79,
+    "total_supply": 120127131.79,
+    "max_supply": null,
+    "price_change_24h": 4.89,
+    "price_change_percentage_24h": 0.13
   },
   {
     "id": 1839,
@@ -152,7 +175,15 @@
     "self_reported_circulating_supply": null,
     "self_reported_tags": null,
     "self_reported_market_cap": null,
-    "infinite_supply": false
+    "infinite_supply": false,
+    "price": 419.66,
+    "market_cap": 62700000000,
+    "volume_24h": 2547806853.73,
+    "circulating_supply": 149541397.38,
+    "total_supply": 149541397.38,
+    "max_supply": 200000000,
+    "price_change_24h": -0.67,
+    "price_change_percentage_24h": -0.16
   },
   {
     "id": 5426,
@@ -177,6 +208,14 @@
     "self_reported_circulating_supply": null,
     "self_reported_tags": null,
     "self_reported_market_cap": null,
-    "infinite_supply": true
+    "infinite_supply": true,
+    "price": 130.62,
+    "market_cap": 57700000000,
+    "volume_24h": 4914597503.56,
+    "circulating_supply": 442315505.47,
+    "total_supply": 571041563.31,
+    "max_supply": null,
+    "price_change_24h": -1.43,
+    "price_change_percentage_24h": -1.08
   }
 ]
