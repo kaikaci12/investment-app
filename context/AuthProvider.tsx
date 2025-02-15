@@ -12,7 +12,7 @@ import {
   signOut,
 } from "firebase/auth";
 import AuthContext from "./AuthContext";
-import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 const TOKEN_KEY = "my-jwt";
@@ -43,7 +43,6 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     loadToken();
   }, []);
 
-  // Register function using Firebase Auth
   const register = async (email: string, password: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -60,6 +59,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       SecureStore.setItem(TOKEN_KEY, token);
 
       const docRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(docRef);
       const profile = {
         username: user.displayName || "johndoe",
         email: user.email,
@@ -68,7 +68,13 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         balance: 0,
         createdAt: new Date().toISOString(),
       };
-      await setDoc(docRef, profile);
+
+      if (!userDoc.exists()) {
+        await setDoc(docRef, profile);
+        console.log("✅ User profile created in Firestore:", profile);
+      } else {
+        console.log("⚠️ User already exists in Firestore:", userDoc.data());
+      }
 
       setAuthState({
         token,

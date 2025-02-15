@@ -4,87 +4,71 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Link, router, Stack, useRouter } from "expo-router";
-import { Text } from "react-native";
+import { Stack, useRouter } from "expo-router";
+import { ActivityIndicator, View, Text } from "react-native";
+import { useState, useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 import "react-native-reanimated";
 import AuthProvider, { useAuth } from "@/context/AuthProvider";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
-import { TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import * as SecureStore from "expo-secure-store";
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+
+// Prevent splash screen auto-hide
 SplashScreen.preventAutoHideAsync();
-const TOKEN_KEY = "my-jwt";
+
 function InitialLayout() {
   const router = useRouter();
   const { authState } = useAuth();
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    RobotoMono_400Regular,
-  });
+  const [loaded] = useFonts({ RobotoMono_400Regular });
+  const [ready, setReady] = useState(false);
+
+  // Handle redirection based on authentication
+  useEffect(() => {
+    if (loaded && authState?.authenticated !== null) {
+      if (authState?.authenticated) {
+        router.replace("/(tabs)"); // Replace prevents going back
+      } else {
+        router.replace("/Login");
+      }
+      setReady(true);
+    }
+  }, [loaded, authState?.authenticated]);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && ready) {
       SplashScreen.hideAsync();
     }
+  }, [loaded, ready]);
 
-    if (authState?.authenticated) {
-      router.push("/(tabs)");
-    } else {
-      router.push("/");
-    }
-  }, [loaded, router, authState]);
+  if (!loaded || !ready) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-100">
+        <ActivityIndicator size="large" color="#6200ea" />
+        <Text className="mt-4 text-lg font-semibold text-gray-600">
+          Loading, please wait...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(start)" options={{ headerShown: false }} />
-
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="Login"
-          options={{
-            headerTitle: "",
+        <Stack.Screen name="Login" options={{ headerShown: false }} />
+        <Stack.Screen name="Register" options={{ headerShown: false }} />
 
-            headerBackTitle: "hello",
-
-            headerLeft: () => {
-              return (
-                <TouchableOpacity onPress={router.back}>
-                  <Ionicons name="arrow-back" size={30} color="#000" />
-                </TouchableOpacity>
-              );
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Register"
-          options={{
-            headerTitle: "",
-            headerShadowVisible: false,
-            headerBackVisible: false,
-            headerBackTitle: "",
-            headerLeft: () => {
-              return (
-                <TouchableOpacity onPress={router.back}>
-                  <Ionicons name="arrow-back" size={30} color="#000" />
-                </TouchableOpacity>
-              );
-            },
-          }}
-        />
-        <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="dark" hidden />
     </ThemeProvider>
   );
 }
+
 export default function RootLayout() {
   return (
     <AuthProvider>
