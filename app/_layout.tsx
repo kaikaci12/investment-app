@@ -30,7 +30,7 @@ function InitialLayout() {
   }, []);
 
   useEffect(() => {
-    if (mounted && loaded && authState?.authenticated !== null) {
+    if (mounted && loaded && authState?.authenticated) {
       if (authState?.authenticated) {
         router.replace("/(tabs)");
       } else {

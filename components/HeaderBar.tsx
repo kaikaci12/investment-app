@@ -25,7 +25,7 @@ const HeaderBar = ({ user }: any) => {
             source={require("@/assets/images/avatar.png")} // Adjusted to require() for static images
             style={styles.avatar}
           />
-          <Text style={styles.performanceText}>{user.username}</Text>
+          <Text style={styles.performanceText}>{user?.username}</Text>
         </View>
 
         <View style={styles.icons}>

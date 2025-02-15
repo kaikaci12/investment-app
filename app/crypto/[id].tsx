@@ -1,7 +1,15 @@
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import cryptoData from "@/crypto.json";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CoinData = () => {
   const [data, setData] = useState<any>(null);
@@ -17,6 +25,10 @@ const CoinData = () => {
     filterData();
   }, [id]);
 
+  const handleBuy = () => {
+    alert(`Buy ${data.name} (${data.symbol})`);
+  };
+
   if (!data) {
     return (
       <View style={styles.container}>
@@ -26,68 +38,77 @@ const CoinData = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Image source={{ uri: data.logo }} style={styles.logo} />
-        <Text style={styles.name}>{data.name}</Text>
-        <Text style={styles.symbol}>({data.symbol})</Text>
-      </View>
-
-      <View style={styles.detailsContainer}>
-        <Text style={styles.description}>{data.description}</Text>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Price:</Text>
-          <Text style={styles.value}>${data.price.toLocaleString()}</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <Image source={{ uri: data.logo }} style={styles.logo} />
+          <Text style={styles.name}>{data.name}</Text>
+          <Text style={styles.symbol}>({data.symbol})</Text>
         </View>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Market Cap:</Text>
-          <Text style={styles.value}>${data.market_cap.toLocaleString()}</Text>
-        </View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.description}>{data.description}</Text>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>24h Volume:</Text>
-          <Text style={styles.value}>${data.volume_24h.toLocaleString()}</Text>
-        </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Price:</Text>
+            <Text style={styles.value}>${data.price.toLocaleString()}</Text>
+          </View>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Circulating Supply:</Text>
-          <Text style={styles.value}>
-            {data.circulating_supply.toLocaleString()} {data.symbol}
-          </Text>
-        </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Market Cap:</Text>
+            <Text style={styles.value}>
+              ${data.market_cap.toLocaleString()}
+            </Text>
+          </View>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Total Supply:</Text>
-          <Text style={styles.value}>
-            {data.total_supply.toLocaleString()} {data.symbol}
-          </Text>
-        </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>24h Volume:</Text>
+            <Text style={styles.value}>
+              ${data.volume_24h.toLocaleString()}
+            </Text>
+          </View>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Max Supply:</Text>
-          <Text style={styles.value}>
-            {data.max_supply ? data.max_supply.toLocaleString() : "N/A"}{" "}
-            {data.symbol}
-          </Text>
-        </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Circulating Supply:</Text>
+            <Text style={styles.value}>
+              {data.circulating_supply.toLocaleString()} {data.symbol}
+            </Text>
+          </View>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>24h Price Change:</Text>
-          <Text
-            style={[
-              styles.value,
-              data.price_change_24h > 0 ? styles.positive : styles.negative,
-            ]}
-          >
-            {data.price_change_24h > 0 ? "+" : ""}
-            {data.price_change_24h.toFixed(2)} (
-            {data.price_change_percentage_24h.toFixed(2)}%)
-          </Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Total Supply:</Text>
+            <Text style={styles.value}>
+              {data.total_supply.toLocaleString()} {data.symbol}
+            </Text>
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Max Supply:</Text>
+            <Text style={styles.value}>
+              {data.max_supply ? data.max_supply.toLocaleString() : "N/A"}{" "}
+              {data.symbol}
+            </Text>
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>24h Price Change:</Text>
+            <Text
+              style={[
+                styles.value,
+                data.price_change_24h > 0 ? styles.positive : styles.negative,
+              ]}
+            >
+              {data.price_change_24h > 0 ? "+" : ""}
+              {data.price_change_24h.toFixed(2)} (
+              {data.price_change_percentage_24h.toFixed(2)}%)
+            </Text>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+        <TouchableOpacity style={styles.buyButton} onPress={handleBuy}>
+          <Text style={styles.buyButtonText}>Buy {data.symbol}</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -95,8 +116,10 @@ export default CoinData;
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: "#1E1E1E",
+  },
+  scrollContainer: {
     padding: 20,
   },
   header: {
@@ -151,5 +174,20 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 18,
     color: "#FFFFFF",
+  },
+  buyButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: "#4CAF50",
+    borderRadius: 10,
+    padding: 15,
+    alignItems: "center",
+  },
+  buyButtonText: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "bold",
   },
 });

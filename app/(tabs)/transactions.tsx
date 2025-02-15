@@ -1,16 +1,25 @@
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 import React, { useState } from "react";
-import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  updateDoc,
+  getDoc,
+  where,
+  collection,
+  getDocs,
+  query,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useAuth } from "@/context/AuthProvider";
 import { auth } from "@/firebaseConfig";
 import { db } from "@/firebaseConfig";
 const Transactions = () => {
   const [amount, setAmount] = useState("");
-  const [recipient, setRecipient] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
   const { authState } = useAuth();
 
-  const handleTransaction = async () => {
+  const handleTransaction = async (recipientEmail: string, amount: any) => {
     try {
       const currentUser = authState?.user;
       if (!currentUser) {
@@ -18,27 +27,32 @@ const Transactions = () => {
         return;
       }
 
-      const senderId = currentUser.uid; // Current user (sender)
-      const recipientId = recipient; // Assuming recipient is their userId (e.g., recipient's UID)
+      const senderId = currentUser.uid;
 
-      // Fetch recipient's document from Firestore
-      const recipientDocRef = doc(db, "users", recipientId);
+      // Query to find the recipient by email
+      const usersCollectionRef = collection(db, "users");
+      const q = query(usersCollectionRef, where("email", "==", recipientEmail));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.log("Recipient not found");
+        return;
+      }
+
+      const recipientDoc = querySnapshot.docs[0];
+      const recipientDocRef = doc(db, "users", recipientDoc.id);
+
+      // Get the sender's document reference
       const senderDocRef = doc(db, "users", senderId);
 
-      // Convert amount to a number
-      const transactionAmount = parseFloat(amount);
+      const transactionAmount = parseInt(amount);
       if (isNaN(transactionAmount) || transactionAmount <= 0) {
         console.log("Invalid amount entered");
         return;
       }
 
-      const recipientDoc = await getDoc(recipientDocRef);
+      // Fetch sender and recipient documents
       const senderDoc = await getDoc(senderDocRef);
-
-      if (!recipientDoc.exists()) {
-        console.log("Recipient not found");
-        return;
-      }
 
       if (!senderDoc.exists()) {
         console.log("Sender not found");
@@ -64,7 +78,7 @@ const Transactions = () => {
       });
 
       console.log(
-        `Transaction successful: ${transactionAmount} sent to ${recipient}`
+        `Transaction successful: ${transactionAmount} sent to ${recipientEmail}`
       );
     } catch (error) {
       console.error("Error processing transaction:", error);
@@ -82,11 +96,14 @@ const Transactions = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Enter recipient (User ID)"
-        value={recipient}
-        onChangeText={setRecipient}
+        placeholder="Enter recipient Email"
+        value={recipientEmail}
+        onChangeText={setRecipientEmail}
       />
-      <Button title="Send Money" onPress={handleTransaction} />
+      <Button
+        title="Send Money"
+        onPress={() => handleTransaction(recipientEmail, amount)}
+      />
     </View>
   );
 };

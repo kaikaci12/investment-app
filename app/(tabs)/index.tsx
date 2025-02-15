@@ -31,11 +31,13 @@ export default function HomeScreen() {
     const fetchUser = () => {
       if (authState?.authenticated) {
         setUserProfile(authState.user);
+      } else {
+        router.push("/");
       }
     };
 
     fetchUser();
-  }, []);
+  }, [authState]);
 
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

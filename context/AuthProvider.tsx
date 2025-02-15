@@ -14,6 +14,7 @@ import {
 import AuthContext from "./AuthContext";
 import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import { tokens } from "react-native-paper/lib/typescript/styles/themes/v3/tokens";
 
 const TOKEN_KEY = "my-jwt";
 
@@ -39,7 +40,9 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         });
         return;
       }
+
       const currentUser = auth.currentUser;
+      console.log(currentUser);
       if (!currentUser) {
         setAuthState({
           user: null,
@@ -92,7 +95,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         email: user.email,
         avatarUrl: user.photoURL || "/assets/images/avatar.png",
         transactions: [],
-        balance: 0,
+        balance: 1000,
         createdAt: new Date().toISOString(),
       };
 
