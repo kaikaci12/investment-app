@@ -12,7 +12,7 @@ import {
   signOut,
 } from "firebase/auth";
 import AuthContext from "./AuthContext";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 const TOKEN_KEY = "my-jwt";
@@ -53,28 +53,31 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         password
       );
       const user = userCredential.user;
+
       console.log("User registered:", user);
-      console.log("Username", user.displayName);
 
       const token = await user.getIdToken();
       SecureStore.setItem(TOKEN_KEY, token);
-      setAuthState({
-        user,
-        token,
-        authenticated: true,
-      });
 
-      console.log("User registered successfully", user);
-      const docRef = await addDoc(collection(db, "users"), {
+      const docRef = doc(db, "users", user.uid);
+      const profile = {
         username: user.displayName || "johndoe",
         email: user.email,
         avatarUrl: user.photoURL || "/assets/images/avatar.png",
         transactions: [],
         balance: 0,
+        createdAt: new Date().toISOString(),
+      };
+      await setDoc(docRef, profile);
+
+      setAuthState({
+        token,
+        authenticated: true,
+        user: {
+          ...user,
+          profile,
+        },
       });
-      if (docRef) {
-        console.log("Document written with ID: ", docRef.id);
-      }
     } catch (error: any) {
       throw new Error(error.message);
     }
