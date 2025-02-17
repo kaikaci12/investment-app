@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
 import React, { useState } from "react";
 import {
   getFirestore,
@@ -14,10 +14,13 @@ import { getAuth } from "firebase/auth";
 import { useAuth } from "@/context/AuthProvider";
 import { auth } from "@/firebaseConfig";
 import { db } from "@/firebaseConfig";
+import { useRouter } from "expo-router";
 const Transactions = () => {
   const [amount, setAmount] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const { authState } = useAuth();
+
+  const router = useRouter();
 
   const handleTransaction = async (recipientEmail: string, amount: any) => {
     try {
@@ -35,7 +38,7 @@ const Transactions = () => {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        console.log("Recipient not found");
+        Alert.alert("Recipient not found");
         return;
       }
 
@@ -67,17 +70,34 @@ const Transactions = () => {
         console.log("Insufficient balance");
         return;
       }
+      const senderTransaction = {
+        name: "Send money",
+        amount: transactionAmount,
+        date: new Date().toISOString(),
+      };
+      const recipientTransaction = {
+        name: "Recieve money",
+        amount: transactionAmount,
+        date: new Date().toISOString(),
+      };
 
-      // Update balances
       await updateDoc(recipientDocRef, {
         balance: recipientBalance + transactionAmount,
+        transactions: [
+          ...(recipientDoc.data().transactions || []),
+          recipientTransaction,
+        ],
       });
 
       await updateDoc(senderDocRef, {
         balance: senderBalance - transactionAmount,
+        transactions: [
+          ...(senderDoc.data().transactions || []),
+          senderTransaction,
+        ],
       });
 
-      console.log(
+      Alert.alert(
         `Transaction successful: ${transactionAmount} sent to ${recipientEmail}`
       );
     } catch (error) {

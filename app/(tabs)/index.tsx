@@ -26,11 +26,15 @@ import { collection, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 export default function HomeScreen() {
   const [userProfile, setUserProfile] = useState<any>();
+  const [searchModalVisible, setSearchModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [transactions, setTransactions] = useState<any>([]);
   const { authState } = useAuth();
   useEffect(() => {
     const fetchUser = () => {
       if (authState?.authenticated) {
         setUserProfile(authState.user);
+        setTransactions(authState.user.transactions);
       } else {
         router.push("/");
       }
@@ -39,19 +43,10 @@ export default function HomeScreen() {
     fetchUser();
   }, [authState]);
 
-  const [searchModalVisible, setSearchModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const transactions = [
-    { date: "6.3.2024, 13:36:43", amount: "87€", type: "Add money" },
-    { date: "6.3.2024, 13:36:43", amount: "416€", type: "Add money" },
-    { date: "6.3.2024, 13:36:43", amount: "682€", type: "Add money" },
-  ];
-
   const filteredTransactions = transactions.filter(
-    (transaction) =>
-      transaction.amount.includes(searchQuery) ||
-      transaction.type.includes(searchQuery)
+    (transaction: any) =>
+      String(transaction.amount).includes(searchQuery) ||
+      transaction.name.includes(searchQuery)
   );
 
   return (
@@ -73,7 +68,7 @@ export default function HomeScreen() {
         </View>
 
         <ScrollView>
-          {filteredTransactions.map((transaction, index) => (
+          {filteredTransactions.map((transaction: any, index: any) => (
             <Card key={index} style={styles.transactionCard}>
               <Card.Content>
                 <Text style={styles.transactionType}>{transaction.type}</Text>
