@@ -52,29 +52,44 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <HeaderBar user={userProfile} />
-      <View style={{ padding: 20 }}>
+
+      {/* Cash Balance Card */}
+      <View style={styles.cardContainer}>
         <Card style={styles.card}>
           <Card.Content>
-            <Text style={styles.label}>Cash Balance</Text>
-            <Text style={styles.amount}>{userProfile?.balance}</Text>
+            <Text style={styles.cardLabel}>Cash Balance</Text>
+            <Text style={styles.cardAmount}>{userProfile?.balance}</Text>
           </Card.Content>
         </Card>
+      </View>
 
-        <View style={styles.searchContainer}>
-          <Text style={styles.transactionTitle}>Recent Transactions</Text>
+      {/* Recent Transactions Section */}
+      <View style={styles.transactionsContainer}>
+        <View style={styles.transactionsHeader}>
+          <Text style={styles.transactionsTitle}>Recent Transactions</Text>
           <TouchableOpacity onPress={() => setSearchModalVisible(true)}>
-            <Ionicons name="search" size={24} color="#000" />
+            <Ionicons name="search" size={24} color="#6C63FF" />
           </TouchableOpacity>
         </View>
 
         <ScrollView>
-          {filteredTransactions?.map((transaction: any, index: any) => (
-            <Card key={index} style={styles.transactionCard}>
+          {filteredTransactions?.map((transaction: any) => (
+            <Card key={transaction.id} style={styles.transactionCard}>
               <Card.Content>
-                <Text style={styles.transactionType}>{transaction.name}</Text>
-                <Text style={styles.transactionAmount}>
-                  {transaction.amount}$
-                </Text>
+                <View style={styles.transactionRow}>
+                  <Text style={styles.transactionType}>{transaction.name}</Text>
+                  <Text
+                    style={[
+                      styles.transactionAmount,
+                      transaction.amount < 0
+                        ? styles.negativeAmount
+                        : styles.positiveAmount,
+                    ]}
+                  >
+                    {transaction.amount < 0 ? "-" : "+"}$
+                    {Math.abs(transaction.amount)}
+                  </Text>
+                </View>
                 <Text style={styles.transactionDate}>
                   {new Date(transaction.date).toDateString()}
                 </Text>
@@ -84,6 +99,7 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
+      {/* Search Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -95,6 +111,7 @@ export default function HomeScreen() {
             <TextInput
               style={styles.searchInput}
               placeholder="Search transactions..."
+              placeholderTextColor="#999"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -114,58 +131,84 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F8F9FA",
+    padding: 16,
+  },
+  header: {
+    marginBottom: 24,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#2C3E50",
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "#7F8C8D",
+  },
+  cardContainer: {
+    marginBottom: 24,
   },
   card: {
-    marginBottom: 16,
+    backgroundColor: "#6C63FF",
+    borderRadius: 16,
+    elevation: 4,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  subtitle: {
+  cardLabel: {
     fontSize: 16,
-    color: "#666",
+    color: "#FFF",
+    opacity: 0.8,
   },
-  label: {
-    fontSize: 18,
-    color: "#333",
-  },
-  amount: {
-    fontSize: 22,
+  cardAmount: {
+    fontSize: 32,
     fontWeight: "bold",
-    color: "#000",
+    color: "#FFF",
+    marginTop: 8,
   },
-  transactionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 20,
-    marginBottom: 10,
+  transactionsContainer: {
+    flex: 1,
   },
-  transactionCard: {
-    marginBottom: 10,
-    backgroundColor: "#FFF",
-    borderRadius: 8,
-  },
-  transactionType: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  transactionAmount: {
-    fontSize: 18,
-    color: "#000",
-    marginTop: 5,
-  },
-  transactionDate: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 5,
-  },
-  searchContainer: {
+  transactionsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 16,
+  },
+  transactionsTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#2C3E50",
+  },
+  transactionCard: {
+    marginBottom: 12,
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    elevation: 2,
+  },
+  transactionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  transactionType: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2C3E50",
+  },
+  transactionAmount: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  positiveAmount: {
+    color: "#27AE60",
+  },
+  negativeAmount: {
+    color: "#E74C3C",
+  },
+  transactionDate: {
+    fontSize: 14,
+    color: "#7F8C8D",
+    marginTop: 4,
   },
   modalContainer: {
     flex: 1,
@@ -174,26 +217,29 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: "80%",
+    width: "90%",
     backgroundColor: "#FFF",
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 16,
   },
   searchInput: {
     borderWidth: 1,
-    borderColor: "#CCC",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+    borderColor: "#DDD",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    fontSize: 16,
+    color: "#2C3E50",
   },
   closeButton: {
-    backgroundColor: "#000",
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: "#6C63FF",
+    padding: 12,
+    borderRadius: 8,
     alignItems: "center",
   },
   closeButtonText: {
     color: "#FFF",
     fontWeight: "bold",
+    fontSize: 16,
   },
 });

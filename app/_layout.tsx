@@ -60,6 +60,7 @@ function InitialLayout() {
       <Stack.Screen name="Register" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="profile" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
       <StatusBar style="dark" hidden />
     </Stack>

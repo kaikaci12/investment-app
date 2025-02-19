@@ -3,12 +3,12 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "@/context/AuthProvider";
 import { router, useRouter } from "expo-router";
 
-interface LogoutModalProps {
+interface ModalProps {
   modalVisible: boolean;
   setModalVisible: (modalVisible: boolean) => void;
 }
 
-const LogoutModal = ({ modalVisible, setModalVisible }: LogoutModalProps) => {
+const MainModal = ({ modalVisible, setModalVisible }: ModalProps) => {
   const { onLogout } = useAuth();
   const router = useRouter();
   const handleLogout = async () => {
@@ -35,6 +35,14 @@ const LogoutModal = ({ modalVisible, setModalVisible }: LogoutModalProps) => {
               onPress={() => setModalVisible(false)}
             >
               <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                router.push("/profile");
+              }}
+            >
+              <Text style={styles.buttonText}>Profile Settings</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleLogout}>
               <Text style={styles.buttonText}>Logout</Text>
@@ -80,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LogoutModal;
+export default MainModal;

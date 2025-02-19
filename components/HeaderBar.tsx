@@ -1,80 +1,63 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import LogoutModal from "./Logout"; // Ensure correct path
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import MainModal from "./Modal";
 import { useAuth } from "@/context/AuthProvider";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import * as SecureStore from "expo-secure-store";
+
 const HeaderBar = ({ user }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
-
   const { authState } = useAuth();
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={["#1E3C72", "#2A5298"]} style={styles.container}>
       {modalVisible && authState?.authenticated && (
-        <LogoutModal
+        <MainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
         />
       )}
 
       <View style={styles.header}>
-        <View>
+        <View style={styles.userInfo}>
           <Image
-            source={require("@/assets/images/avatar.png")} // Adjusted to require() for static images
+            source={require("@/assets/images/avatar.png")}
             style={styles.avatar}
           />
-          <Text style={styles.performanceText}>{user?.username}</Text>
+          <Text style={styles.username}>{user?.username}</Text>
         </View>
-
         <View style={styles.icons}>
-          <Ionicons name="search" size={24} color="#fff" style={styles.icon} />
-          <Ionicons
-            name="menu"
-            onPress={() => setModalVisible(true)}
-            size={24}
-            color="#fff"
-            style={styles.icon}
-          />
+          <TouchableOpacity>
+            <Ionicons
+              name="search"
+              size={24}
+              color="#fff"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Ionicons name="menu" size={28} color="#fff" style={styles.icon} />
+          </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.performanceContainer}>
-        <View style={styles.performance}>
-          <Text style={styles.performanceText}>All time performance</Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.performanceBox}>
+          <Text style={styles.performanceText}>Income</Text>
+          <View style={styles.performanceRow}>
             <AntDesign name="arrowup" size={24} color="green" />
-            <Text
-              style={{
-                color: "green",
-                fontSize: 20,
-                fontWeight: "bold",
-                marginLeft: 5,
-              }}
-            >
-              +0.11%
-            </Text>
+            <Text style={styles.performanceValueGreen}></Text>
           </View>
         </View>
-        <View style={styles.performance}>
-          <Text style={styles.performanceText}>All time performance</Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.performanceBox}>
+          <Text style={styles.performanceText}>Expense</Text>
+          <View style={styles.performanceRow}>
             <AntDesign name="arrowdown" size={24} color="red" />
-            <Text
-              style={{
-                color: "red",
-                fontSize: 20,
-                fontWeight: "bold",
-                marginLeft: 5,
-              }}
-            >
-              +0.11%
-            </Text>
+            <Text style={styles.performanceValueRed}></Text>
           </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -82,87 +65,76 @@ export default HeaderBar;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff", // Main background remains white
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 4,
+    shadowColor: "#000",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#2B4EFF",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
-    width: 70,
-    height: 70,
-    borderRadius: 35, // Adjusted for perfect circular avatar
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: "#fff",
   },
-  headerContent: {
-    alignItems: "center",
-    flex: 1,
-  },
-  playLearn: {
-    color: "#fff",
-    fontSize: 14,
-  },
-  amount: {
+  username: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
+    marginLeft: 10,
   },
   icons: {
     flexDirection: "row",
   },
   icon: {
-    marginLeft: 10,
+    marginLeft: 15,
   },
-
-  // Blue background for navLinks and performance
-  contentWrapper: {
-    backgroundColor: "#2B4EFF",
-    paddingBottom: 20,
-  },
-  navLinks: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
-  },
-  navLink: {
-    color: "#fff",
-    fontSize: 16,
-  },
-
-  // Performance section styling
   performanceContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 10,
-    marginTop: 10,
+    marginTop: 15,
   },
-  performance: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)", // Slight transparency for contrast
-    borderRadius: 10,
-    width: 154,
-    height: 101,
-    justifyContent: "center",
+  performanceBox: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 15,
+    width: "48%",
+    padding: 15,
     alignItems: "center",
-    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   performanceText: {
-    color: "#FFF",
-    fontSize: 13,
-    fontWeight: "400",
-    textAlign: "center",
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "500",
     marginBottom: 5,
+    textAlign: "center",
   },
   performanceRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
   },
-  performanceValue: {
+  performanceValueGreen: {
     color: "green",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+  performanceValueRed: {
+    color: "red",
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 5,
