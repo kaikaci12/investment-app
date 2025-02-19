@@ -53,7 +53,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <HeaderBar user={userProfile} />
 
-      {/* Cash Balance Card */}
+      <View></View>
       <View style={styles.cardContainer}>
         <Card style={styles.card}>
           <Card.Content>
@@ -75,7 +75,7 @@ export default function HomeScreen() {
         <ScrollView>
           {filteredTransactions?.map((transaction: any) => (
             <Card key={transaction.id} style={styles.transactionCard}>
-              <Card.Content>
+              <Card.Content key={transaction.id}>
                 <View style={styles.transactionRow}>
                   <Text style={styles.transactionType}>{transaction.name}</Text>
                   <Text
@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F9FA",
-    padding: 16,
   },
   header: {
     marginBottom: 24,
@@ -147,7 +146,8 @@ const styles = StyleSheet.create({
     color: "#7F8C8D",
   },
   cardContainer: {
-    marginBottom: 24,
+    marginHorizontal: 10,
+    marginBottom: 50,
   },
   card: {
     backgroundColor: "#6C63FF",
@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
   },
   transactionsContainer: {
     flex: 1,
+    marginHorizontal: 10,
   },
   transactionsHeader: {
     flexDirection: "row",

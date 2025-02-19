@@ -41,16 +41,6 @@ function InitialLayout() {
   }, [isAppReady, authState]);
 
   // Show a loading indicator until fonts and auth state are ready
-  if (!fontsLoaded || !isAppReady) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#6200ea" />
-        <Text style={{ marginTop: 16, fontSize: 18, color: "#6b7280" }}>
-          Loading, please wait...
-        </Text>
-      </View>
-    );
-  }
 
   // Render the navigation stack once everything is ready
   return (
@@ -60,7 +50,7 @@ function InitialLayout() {
       <Stack.Screen name="Register" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="profile" options={{ headerShown: false }} />
+      <Stack.Screen name="Profile" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
       <StatusBar style="dark" hidden />
     </Stack>

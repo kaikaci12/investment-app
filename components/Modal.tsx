@@ -39,7 +39,7 @@ const MainModal = ({ modalVisible, setModalVisible }: ModalProps) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                router.push("/profile");
+                router.push("/Profile");
               }}
             >
               <Text style={styles.buttonText}>Profile Settings</Text>
