@@ -33,8 +33,8 @@ export default function HomeScreen() {
   useEffect(() => {
     const fetchUser = () => {
       if (authState?.authenticated) {
-        setUserProfile(authState.user);
-        setTransactions(authState.user.transactions);
+        setUserProfile(authState.user.profile);
+        setTransactions(authState.user.profile.transactions);
       } else {
         router.push("/");
       }
@@ -43,7 +43,7 @@ export default function HomeScreen() {
     fetchUser();
   }, [authState]);
 
-  const filteredTransactions = transactions.filter(
+  const filteredTransactions = transactions?.filter(
     (transaction: any) =>
       String(transaction.amount).includes(searchQuery) ||
       transaction.name.includes(searchQuery)
@@ -68,14 +68,16 @@ export default function HomeScreen() {
         </View>
 
         <ScrollView>
-          {filteredTransactions.map((transaction: any, index: any) => (
+          {filteredTransactions?.map((transaction: any, index: any) => (
             <Card key={index} style={styles.transactionCard}>
               <Card.Content>
-                <Text style={styles.transactionType}>{transaction.type}</Text>
+                <Text style={styles.transactionType}>{transaction.name}</Text>
                 <Text style={styles.transactionAmount}>
-                  {transaction.amount}
+                  {transaction.amount}$
                 </Text>
-                <Text style={styles.transactionDate}>{transaction.date}</Text>
+                <Text style={styles.transactionDate}>
+                  {new Date(transaction.date).toDateString()}
+                </Text>
               </Card.Content>
             </Card>
           ))}

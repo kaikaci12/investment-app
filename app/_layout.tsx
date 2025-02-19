@@ -1,8 +1,3 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import { ActivityIndicator, View, Text } from "react-native";
@@ -18,34 +13,35 @@ import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
 SplashScreen.preventAutoHideAsync();
 
 function InitialLayout() {
+  const [fontsLoaded] = useFonts({ RobotoMono_400Regular });
+  const [isAppReady, setIsAppReady] = useState(false);
   const router = useRouter();
   const { authState } = useAuth();
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({ RobotoMono_400Regular });
-  const [mounted, setMounted] = useState(false);
-
-  // Handle redirection based on authentication and ensure it happens after mounting
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
-    if (mounted || loaded || authState?.authenticated) {
-      if (authState?.authenticated) {
-        router.replace("/(tabs)");
-      } else {
-        router.replace("/");
-      }
-    }
-  }, [mounted, loaded, authState?.authenticated]);
+    // Check if fonts are loaded and authState is available
+    if (fontsLoaded && authState !== undefined) {
+      setIsAppReady(true);
 
-  useEffect(() => {
-    if (loaded && mounted) {
+      // Hide the splash screen
       SplashScreen.hideAsync();
     }
-  }, [loaded, mounted]);
+  }, [fontsLoaded, authState]);
 
-  if (!loaded || !mounted) {
+  useEffect(() => {
+    // Handle navigation only after the app is fully ready
+    if (isAppReady) {
+      if (authState?.authenticated) {
+        router.replace("/(tabs)"); // Navigate to the home screen if authenticated
+      } else {
+        router.replace("/Login"); // Navigate to the login screen if not authenticated
+      }
+    }
+  }, [isAppReady, authState]);
+
+  // Show a loading indicator until fonts and auth state are ready
+  if (!fontsLoaded || !isAppReady) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#6200ea" />
@@ -56,18 +52,17 @@ function InitialLayout() {
     );
   }
 
+  // Render the navigation stack once everything is ready
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="Login" options={{ headerShown: false }} />
-        <Stack.Screen name="Register" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="Login" options={{ headerShown: false }} />
+      <Stack.Screen name="Register" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="+not-found" />
       <StatusBar style="dark" hidden />
-    </ThemeProvider>
+    </Stack>
   );
 }
 

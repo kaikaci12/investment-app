@@ -46,25 +46,13 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
           });
           return;
         }
+        console.log("currentUser: ", parsedUser);
 
-        // Fetch User Profile from Firestore
-        const docRef = doc(db, "users", parsedUser.uid);
-        const userDoc = await getDoc(docRef);
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setAuthState({
-            user: { ...parsedUser, ...userData },
-            token,
-            authenticated: true,
-          });
-        } else {
-          console.log("⚠️ User not found in Firestore");
-          setAuthState({
-            user: null,
-            token: null,
-            authenticated: false,
-          });
-        }
+        setAuthState({
+          user: parsedUser,
+          token,
+          authenticated: true,
+        });
       } catch (error) {
         console.error("Error loading user:", error);
       }
