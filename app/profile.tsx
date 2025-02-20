@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
-import { db, storage } from "@/firebaseConfig";
+import { db } from "@/firebaseConfig";
 import { getDoc, setDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for the upload icon
@@ -28,13 +28,12 @@ const Profile = () => {
     }
   }, [authState]);
 
-  const updateUserProfile = async (username: string) => {
+  const updateUserProfile = async (username: string, avatar: string) => {
     if (!authState?.user?.uid) return;
     try {
       const userRef = doc(db, "users", authState.user.uid);
-      await updateDoc(userRef, { username });
-      setCurrentUser((prev: any) => ({ ...prev, username }));
-      console.log(currentUser);
+      await updateDoc(userRef, { username, avatarUrl: avatar });
+      setCurrentUser((prev: any) => ({ ...prev, username, avatarUrl: avatar }));
     } catch (error) {
       console.error("Error updating profile: ", error);
     }
@@ -53,18 +52,23 @@ const Profile = () => {
   };
 
   const uploadImage = async (uri: string) => {
-    if (!authState?.user?.uid) return;
+    let data = new FormData();
+    data.append("file", { uri, type: "image/jpeg", name: "profile.jpg" });
+    data.append("upload_preset", "investment-app");
+
     try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const storageRef = ref(storage, `avatars/${authState.user.uid}`);
-      await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(storageRef);
-      setAvatar(downloadURL);
-      console.log("image url: ", downloadURL);
-      updateUserProfile(downloadURL);
+      let response = await fetch(
+        "https://api.cloudinary.com/v1_1/dedukqhbm/image/upload",
+        { method: "POST", body: data }
+      );
+
+      let result = await response.json();
+      if (result.secure_url) {
+        setAvatar(result.secure_url);
+        await updateUserProfile(username, result.secure_url); // ✅ Save avatar immediately
+      }
     } catch (error) {
-      console.error("Error uploading image: ", error);
+      alert(`Error uploading image: ${error}`);
     }
   };
 
@@ -88,7 +92,7 @@ const Profile = () => {
         placeholder="Enter new username"
       />
       <TouchableOpacity
-        onPress={() => updateUserProfile(username)}
+        onPress={() => updateUserProfile(username, avatar)}
         style={styles.button}
       >
         <Text style={styles.buttonText}>Save Changes</Text>
