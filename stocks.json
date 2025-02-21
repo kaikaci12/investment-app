@@ -19,5 +19,89 @@
     "price": 3400.0,
     "change": "+10.00",
     "changePercent": "+0.29%"
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla Inc.",
+    "price": 700.0,
+    "change": "+15.00",
+    "changePercent": "+2.19%"
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft Corporation",
+    "price": 300.0,
+    "change": "+2.50",
+    "changePercent": "+0.84%"
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA Corporation",
+    "price": 600.0,
+    "change": "-3.00",
+    "changePercent": "-0.50%"
+  },
+  {
+    "symbol": "META",
+    "name": "Meta Platforms Inc.",
+    "price": 250.0,
+    "change": "+4.00",
+    "changePercent": "+1.63%"
+  },
+  {
+    "symbol": "BRK.B",
+    "name": "Berkshire Hathaway Inc.",
+    "price": 350.0,
+    "change": "+1.00",
+    "changePercent": "+0.29%"
+  },
+  {
+    "symbol": "TSM",
+    "name": "Taiwan Semiconductor Manufacturing Company",
+    "price": 100.0,
+    "change": "-0.50",
+    "changePercent": "-0.50%"
+  },
+  {
+    "symbol": "V",
+    "name": "Visa Inc.",
+    "price": 220.0,
+    "change": "+1.20",
+    "changePercent": "+0.55%"
+  },
+  {
+    "symbol": "JNJ",
+    "name": "Johnson & Johnson",
+    "price": 160.0,
+    "change": "-0.80",
+    "changePercent": "-0.50%"
+  },
+  {
+    "symbol": "WMT",
+    "name": "Walmart Inc.",
+    "price": 140.0,
+    "change": "+0.60",
+    "changePercent": "+0.43%"
+  },
+  {
+    "symbol": "PG",
+    "name": "Procter & Gamble Company",
+    "price": 150.0,
+    "change": "+0.40",
+    "changePercent": "+0.27%"
+  },
+  {
+    "symbol": "MA",
+    "name": "Mastercard Incorporated",
+    "price": 350.0,
+    "change": "+2.00",
+    "changePercent": "+0.57%"
+  },
+  {
+    "symbol": "DIS",
+    "name": "The Walt Disney Company",
+    "price": 110.0,
+    "change": "-1.50",
+    "changePercent": "-1.35%"
   }
 ]
