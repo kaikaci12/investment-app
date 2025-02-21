@@ -26,9 +26,9 @@ const Profile = () => {
 
   useEffect(() => {
     if (authState?.authenticated) {
-      setCurrentUser(authState.user.profile);
-      setUsername(authState.user.profile.username);
-      setAvatar(authState.user.profile.avatarUrl);
+      setCurrentUser(authState.user);
+      setUsername(authState.user.username);
+      setAvatar(authState.user.avatarUrl);
     }
   }, [authState]);
 
@@ -46,8 +46,6 @@ const Profile = () => {
           .catch((error) =>
             console.error("Error saving to AsyncStorage:", error)
           );
-
-        return updatedUser;
       });
 
       alert("Profile Updated Succesfully");

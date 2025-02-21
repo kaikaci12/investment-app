@@ -23,7 +23,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     authenticated: boolean | null;
-    user: any;
+    user: any; // User object with uid and profile data
   }>({
     token: null,
     authenticated: null,
@@ -52,7 +52,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
           token,
           authenticated: true,
         });
-        console.log("currentUser✅: ", parsedUser);
+        console.log("✅ Current User Loaded: ", parsedUser);
       } catch (error) {
         console.error("Error loading user:", error);
       }
@@ -60,6 +60,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     loadUser();
   }, []);
 
+  // ✅ User Registration
   const register = async (email: string, password: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -75,6 +76,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
       // Create User Profile
       const profile = {
+        uid: user.uid, // Include uid in the profile
         username: user.displayName || "johndoe",
         email: user.email,
         avatarUrl: user.photoURL || "/assets/images/avatar.png",
@@ -83,6 +85,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         createdAt: new Date().toISOString(),
       };
 
+      // Save Profile to Firestore
       const docRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(docRef);
       if (!userDoc.exists()) {
@@ -91,22 +94,13 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       }
 
       // Store User Info in AsyncStorage
-      await AsyncStorage.setItem(
-        USER_KEY,
-        JSON.stringify({
-          uid: user.uid,
-          profile,
-        })
-      );
+      await AsyncStorage.setItem(USER_KEY, JSON.stringify(profile));
 
-      // Update State
+      // Update Auth State
       setAuthState({
         token,
         authenticated: true,
-        user: {
-          uid: user.uid,
-          profile,
-        },
+        user: profile, // Simplified user object
       });
 
       console.log("✅ User registered successfully");
@@ -138,27 +132,19 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       }
 
       const userData = userDoc.data();
+      userData.uid = user.uid; // Include uid in the user data
 
       // Store User Info in AsyncStorage
-      await AsyncStorage.setItem(
-        USER_KEY,
-        JSON.stringify({
-          uid: user.uid,
-          profile: userData,
-        })
-      );
+      await AsyncStorage.setItem(USER_KEY, JSON.stringify(userData));
 
       // Update Auth State
       setAuthState({
-        user: {
-          uid: user.uid,
-          profile: userData,
-        },
         token,
         authenticated: true,
+        user: userData, // Simplified user object
       });
 
-      console.log("✅ User logged in successfully");
+      console.log("✅ User logged in successfully", userData);
     } catch (error: any) {
       console.error("Login error:", error.message);
       throw new Error(error.message);
@@ -173,6 +159,7 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       await AsyncStorage.removeItem(USER_KEY);
       await signOut(auth);
 
+      // Update Auth State
       setAuthState({
         user: null,
         token: null,

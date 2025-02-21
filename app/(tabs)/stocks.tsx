@@ -12,12 +12,15 @@ import { useRouter } from "expo-router";
 
 const Stocks = () => {
   const router = useRouter();
+  const handlePress = (id: number) => {
+    router.push(`/stocks/${id}`);
+  };
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Stocks</Text>
       {stocksData?.map((stock, index) => (
         <TouchableOpacity
-          onPress={() => router.push(``)}
+          onPress={() => handlePress(stock.id)}
           key={index}
           style={styles.stockItem}
         >

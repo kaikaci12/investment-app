@@ -32,18 +32,19 @@ export default function HomeScreen() {
   const { authState } = useAuth();
   useEffect(() => {
     if (authState?.authenticated && authState.user) {
-      setUserProfile({ ...authState.user.profile });
-      setTransactions(authState.user.profile.transactions || []);
+      setUserProfile({ ...authState.user });
+      setTransactions(authState.user?.transactions || []);
     } else {
       router.push("/");
     }
   }, [authState]);
 
-  const filteredTransactions = transactions?.filter(
-    (transaction: any) =>
-      String(transaction.amount).includes(searchQuery) ||
-      transaction.name.includes(searchQuery)
-  );
+  const filteredTransactions =
+    transactions?.filter(
+      (transaction: any) =>
+        String(transaction.amount).includes(searchQuery) ||
+        transaction.name.includes(searchQuery)
+    ) || [];
 
   return (
     <View style={styles.container}>
