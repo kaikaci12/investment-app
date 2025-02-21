@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -10,6 +10,35 @@ const HeaderBar = ({ user }: any) => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const { authState } = useAuth();
+  useEffect(() => {
+    const calculate = () => {
+      if (authState?.user?.transactions) {
+        const { transactions } = authState.user;
+
+        // Calculate Expense and Income
+        const { expense, income } = transactions.reduce(
+          (acc: any, transaction: any) => {
+            if (transaction.name === "Send money") {
+              acc.expense += transaction.amount;
+            } else {
+              // Other transactions = Income
+              acc.income += transaction.amount;
+            }
+            return acc;
+          },
+          { expense: 0, income: 0 } // Initial values
+        );
+
+        // Update State
+        setExpense(expense);
+        setIncome(income);
+      }
+    };
+
+    calculate();
+  }, [authState?.user?.transactions]); // Re-run when transactions change
+  const [income, setIncome] = useState("");
+  const [expense, setExpense] = useState("");
 
   return (
     <LinearGradient colors={["#1E3C72", "#2A5298"]} style={styles.container}>
@@ -36,14 +65,6 @@ const HeaderBar = ({ user }: any) => {
           <Text style={styles.username}>{user?.username}</Text>
         </TouchableOpacity>
         <View style={styles.icons}>
-          <TouchableOpacity>
-            <Ionicons
-              name="search"
-              size={24}
-              color="#fff"
-              style={styles.icon}
-            />
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Ionicons name="menu" size={28} color="#fff" style={styles.icon} />
           </TouchableOpacity>
@@ -55,14 +76,14 @@ const HeaderBar = ({ user }: any) => {
           <Text style={styles.performanceText}>Income</Text>
           <View style={styles.performanceRow}>
             <AntDesign name="arrowup" size={24} color="green" />
-            <Text style={styles.performanceValueGreen}></Text>
+            <Text style={styles.performanceValueGreen}>{income}$</Text>
           </View>
         </View>
         <View style={styles.performanceBox}>
           <Text style={styles.performanceText}>Expense</Text>
           <View style={styles.performanceRow}>
             <AntDesign name="arrowdown" size={24} color="red" />
-            <Text style={styles.performanceValueRed}></Text>
+            <Text style={styles.performanceValueRed}>{expense}$</Text>
           </View>
         </View>
       </View>
@@ -136,7 +157,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   performanceValueGreen: {
-    color: "green",
+    color: "rgb(0, 128, 15)",
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 5,

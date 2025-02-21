@@ -124,7 +124,6 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       // Store Token Securely
       await SecureStore.setItemAsync(TOKEN_KEY, token);
 
-      // Fetch User Profile
       const docRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(docRef);
       if (!userDoc.exists()) {
@@ -134,14 +133,13 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
       const userData = userDoc.data();
       userData.uid = user.uid; // Include uid in the user data
 
-      // Store User Info in AsyncStorage
       await AsyncStorage.setItem(USER_KEY, JSON.stringify(userData));
 
       // Update Auth State
       setAuthState({
         token,
         authenticated: true,
-        user: userData, // Simplified user object
+        user: userData,
       });
 
       console.log("✅ User logged in successfully", userData);
@@ -151,7 +149,6 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     }
   };
 
-  // ✅ User Logout
   const logOut = async () => {
     try {
       // Clear Tokens & User Data
