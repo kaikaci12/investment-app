@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState } from "react";
 import {
   getFirestore,
@@ -10,6 +18,8 @@ import {
   getDocs,
   query,
 } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign } from "@expo/vector-icons";
 import { getAuth } from "firebase/auth";
 import { useAuth } from "@/context/AuthProvider";
 import { auth } from "@/firebaseConfig";
@@ -50,7 +60,7 @@ const Transactions = () => {
 
       const transactionAmount = parseInt(amount);
       if (isNaN(transactionAmount) || transactionAmount <= 0) {
-        console.log("Invalid amount entered");
+        Alert.alert("Invalid amount entered");
         return;
       }
 
@@ -58,7 +68,7 @@ const Transactions = () => {
       const senderDoc = await getDoc(senderDocRef);
 
       if (!senderDoc.exists()) {
-        console.log("Sender not found");
+        Alert.alert("Sender not found");
         return;
       }
 
@@ -67,20 +77,24 @@ const Transactions = () => {
 
       // Check if sender has enough balance
       if (senderBalance < transactionAmount) {
-        console.log("Insufficient balance");
+        Alert.alert("Insufficient balance");
         return;
       }
+
+      // Create transaction objects
       const senderTransaction = {
         name: "Send money",
-        amount: transactionAmount,
-        date: new Date().toISOString(),
-      };
-      const recipientTransaction = {
-        name: "Recieve money",
-        amount: transactionAmount,
+        amount: -transactionAmount, // Negative amount for sender
         date: new Date().toISOString(),
       };
 
+      const recipientTransaction = {
+        name: "Receive money",
+        amount: transactionAmount, // Positive amount for recipient
+        date: new Date().toISOString(),
+      };
+
+      // Update recipient's balance and transactions
       await updateDoc(recipientDocRef, {
         balance: recipientBalance + transactionAmount,
         transactions: [
@@ -89,6 +103,7 @@ const Transactions = () => {
         ],
       });
 
+      // Update sender's balance and transactions
       await updateDoc(senderDocRef, {
         balance: senderBalance - transactionAmount,
         transactions: [
@@ -97,16 +112,35 @@ const Transactions = () => {
         ],
       });
 
+      // Update AsyncStorage with the latest sender data
+      const updatedSenderData = {
+        ...senderDoc.data(),
+        balance: senderBalance - transactionAmount,
+        transactions: [
+          ...(senderDoc.data().transactions || []),
+          senderTransaction,
+        ],
+      };
+
+      await AsyncStorage.setItem(
+        "currentUser",
+        JSON.stringify(updatedSenderData)
+      );
+
       Alert.alert(
         `Transaction successful: ${transactionAmount} sent to ${recipientEmail}`
       );
     } catch (error) {
       console.error("Error processing transaction:", error);
+      Alert.alert("Transaction failed. Please try again.");
     }
   };
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
       <TextInput
         style={styles.input}
         placeholder="Enter amount"
@@ -145,6 +179,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
     width: "100%",
+  },
+  backButton: {
+    position: "absolute",
+    left: 10,
+    top: 10,
   },
   button: {
     marginTop: 12,

@@ -46,13 +46,13 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
           });
           return;
         }
-        console.log("currentUser: ", parsedUser);
 
         setAuthState({
           user: parsedUser,
           token,
           authenticated: true,
         });
+        console.log("currentUser✅: ", parsedUser);
       } catch (error) {
         console.error("Error loading user:", error);
       }
@@ -60,7 +60,6 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     loadUser();
   }, []);
 
-  // ✅ Register New User
   const register = async (email: string, password: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(

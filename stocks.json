@@ -1,0 +1,23 @@
+[
+  {
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "price": 150.0,
+    "change": "+1.50",
+    "changePercent": "+1.01%"
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet Inc.",
+    "price": 2800.0,
+    "change": "-5.00",
+    "changePercent": "-0.18%"
+  },
+  {
+    "symbol": "AMZN",
+    "name": "Amazon.com Inc.",
+    "price": 3400.0,
+    "change": "+10.00",
+    "changePercent": "+0.29%"
+  }
+]

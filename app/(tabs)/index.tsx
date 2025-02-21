@@ -31,16 +31,12 @@ export default function HomeScreen() {
   const [transactions, setTransactions] = useState<any>([]);
   const { authState } = useAuth();
   useEffect(() => {
-    const fetchUser = () => {
-      if (authState?.authenticated) {
-        setUserProfile(authState.user.profile);
-        setTransactions(authState.user.profile.transactions);
-      } else {
-        router.push("/");
-      }
-    };
-
-    fetchUser();
+    if (authState?.authenticated && authState.user) {
+      setUserProfile({ ...authState.user.profile });
+      setTransactions(authState.user.profile.transactions || []);
+    } else {
+      router.push("/");
+    }
   }, [authState]);
 
   const filteredTransactions = transactions?.filter(
@@ -53,7 +49,6 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <HeaderBar user={userProfile} />
 
-      <View></View>
       <View style={styles.cardContainer}>
         <Card style={styles.card}>
           <Card.Content>
@@ -75,7 +70,7 @@ export default function HomeScreen() {
         <ScrollView>
           {filteredTransactions?.map((transaction: any) => (
             <Card key={transaction.id} style={styles.transactionCard}>
-              <Card.Content key={transaction.id}>
+              <Card.Content>
                 <View style={styles.transactionRow}>
                   <Text style={styles.transactionType}>{transaction.name}</Text>
                   <Text

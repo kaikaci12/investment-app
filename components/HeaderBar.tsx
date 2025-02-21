@@ -4,8 +4,10 @@ import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import MainModal from "./Modal";
 import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "expo-router";
 
 const HeaderBar = ({ user }: any) => {
+  const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const { authState } = useAuth();
 
@@ -19,13 +21,20 @@ const HeaderBar = ({ user }: any) => {
       )}
 
       <View style={styles.header}>
-        <View style={styles.userInfo}>
+        <TouchableOpacity
+          onPress={() => router.push("/Profile")}
+          style={styles.userInfo}
+        >
           <Image
-            source={require("@/assets/images/avatar.png")}
+            source={
+              user?.avatarUrl
+                ? { uri: user.avatarUrl }
+                : require("@/assets/images/avatar.png")
+            }
             style={styles.avatar}
           />
           <Text style={styles.username}>{user?.username}</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.icons}>
           <TouchableOpacity>
             <Ionicons

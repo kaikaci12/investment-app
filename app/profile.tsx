@@ -13,8 +13,12 @@ import { db } from "@/firebaseConfig";
 import { getDoc, setDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for the upload icon
+import AntDesign from "@expo/vector-icons/AntDesign";
 
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Profile = () => {
+  const router = useRouter();
   const { authState } = useAuth();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [username, setUsername] = useState("");
@@ -24,7 +28,7 @@ const Profile = () => {
     if (authState?.authenticated) {
       setCurrentUser(authState.user.profile);
       setUsername(authState.user.profile.username);
-      setAvatar(authState.user.profile.avatar);
+      setAvatar(authState.user.profile.avatarUrl);
     }
   }, [authState]);
 
@@ -32,8 +36,21 @@ const Profile = () => {
     if (!authState?.user?.uid) return;
     try {
       const userRef = doc(db, "users", authState.user.uid);
+
       await updateDoc(userRef, { username, avatarUrl: avatar }); //
-      setCurrentUser((prev: any) => ({ ...prev, username, avatarUrl: avatar })); // 🔹 Keep it consistent
+      setCurrentUser((prev: any) => {
+        const updatedUser = { ...prev, username, avatarUrl: avatar };
+
+        AsyncStorage.setItem("currentUser", JSON.stringify(updatedUser))
+          .then(() => console.log("Current user saved to AsyncStorage"))
+          .catch((error) =>
+            console.error("Error saving to AsyncStorage:", error)
+          );
+
+        return updatedUser;
+      });
+
+      alert("Profile Updated Succesfully");
     } catch (error) {
       console.error("Error updating profile: ", error);
     }
@@ -72,9 +89,8 @@ const Profile = () => {
       let result = await response.json();
       if (result.secure_url) {
         setAvatar(result.secure_url);
-        await updateUserProfile(username, result.secure_url); // ✅ Save avatar immediately
       }
-
+      console.log(result.secure_url);
       alert("Image uploaded successfully ✅");
     } catch (error: any) {
       alert(`Error uploading image: ${error.message}`);
@@ -83,14 +99,22 @@ const Profile = () => {
 
   const removeAvatar = async () => {
     setAvatar("");
-    await updateUserProfile(username, ""); // Remove avatar URL from the profile
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Edit Profile</Text>
-      <View style={styles.editContainer}>
-        <Text style={styles.editText}>Edit Avatar Picture</Text>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Edit Profile</Text>
+      </View>
+
+      <View style={styles.content}>
+        <Text style={styles.sectionTitle}>Edit Avatar Picture</Text>
         <TouchableOpacity
           onPress={pickImageAsync}
           style={styles.avatarContainer}
@@ -107,29 +131,30 @@ const Profile = () => {
             </View>
           )}
         </TouchableOpacity>
-      </View>
+        {avatar && (
+          <TouchableOpacity onPress={removeAvatar} style={styles.removeButton}>
+            <Text style={styles.removeButtonText}>Remove Avatar</Text>
+          </TouchableOpacity>
+        )}
 
-      {avatar && (
-        <TouchableOpacity onPress={removeAvatar} style={styles.removeButton}>
-          <Text style={styles.removeButtonText}>Remove Avatar</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Edit Username</Text>
+          <TextInput
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Enter new username"
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        <TouchableOpacity
+          onPress={() => updateUserProfile(username, avatar)}
+          style={styles.saveButton}
+        >
+          <Text style={styles.saveButtonText}>Save Changes</Text>
         </TouchableOpacity>
-      )}
-      <View style={styles.editContainer}>
-        <Text>Edit Username</Text>
-        <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Enter new username"
-        />
       </View>
-
-      <TouchableOpacity
-        onPress={() => updateUserProfile(username, avatar)}
-        style={styles.button}
-      >
-        <Text style={styles.buttonText}>Save Changes</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -139,18 +164,38 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-
-    padding: 20,
     backgroundColor: "#f5f5f5",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  backButton: {
+    marginRight: 16,
+  },
   title: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#333",
+  },
+  content: {
+    padding: 20,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 12,
   },
   avatarContainer: {
-    position: "relative",
+    alignItems: "center",
     marginBottom: 20,
   },
   avatar: {
@@ -163,9 +208,11 @@ const styles = StyleSheet.create({
   avatarOverlay: {
     position: "absolute",
     top: 0,
-    left: 0,
+    left: 100,
     right: 0,
     bottom: 0,
+    width: 150,
+    height: 150,
     borderRadius: 75,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     alignItems: "center",
@@ -177,44 +224,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-    marginBottom: 20,
     backgroundColor: "#fff",
     fontSize: 16,
-  },
-  button: {
-    backgroundColor: "#007bff",
-    padding: 15,
-    borderRadius: 8,
-    width: "100%",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
+    color: "#333",
   },
   removeButton: {
     backgroundColor: "#ff4444",
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
-    width: "100%",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 24,
   },
   removeButtonText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 16,
   },
-  editContainer: {
-    flexDirection: "column",
-
-    justifyContent: "center",
-    width: "100%",
-    gap: 10,
+  saveButton: {
+    backgroundColor: "#007bff",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
   },
-  editText: {
+  saveButtonText: {
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16,
-    fontWeight: "condensed",
   },
 });
