@@ -1,17 +1,28 @@
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import stocksData from "@/stocks.json";
-
+import { useAuth } from "@/context/AuthProvider";
+import { db } from "@/firebaseConfig";
+import { getDoc, updateDoc, setDoc, doc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const StockPage = () => {
+  const { authState } = useAuth();
+
   const { id } = useLocalSearchParams(); // Get the `id` from the URL
   const [data, setData] = useState<any>(null); // State to hold the stock data
 
   useEffect(() => {
-    // Find the stock with the matching `id`
     const filteredData = stocksData.find((stock) => stock.id.toString() === id);
-    setData(filteredData); // Set the filtered data to state
-  }, [id]); // Re-run effect when `id` changes
+    setData(filteredData);
+  }, [id]);
 
   if (!data) {
     return (
@@ -20,6 +31,39 @@ const StockPage = () => {
       </View>
     );
   }
+  const handleBuy = async () => {
+    if (!authState?.user?.uid) return;
+    try {
+      const userRef = doc(db, "users", authState.user.uid);
+      const price = data.price;
+
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+      if (userData?.balance < price) {
+        alert("Insufficient balance");
+        return;
+      }
+      const newTransaction = {
+        name: "Buy Stock",
+        amount: price,
+        date: new Date().toISOString(),
+      };
+      // Update AsyncStorage with the latest sender data
+      const updatedData = {
+        ...userData,
+        balance: userData?.balance - price,
+        transactions: [...userData?.transactions, newTransaction],
+      };
+      await updateDoc(userRef, {
+        balance: userData?.balance - price,
+        transactions: [...userData?.transactions, newTransaction],
+      });
+      AsyncStorage.setItem("currentUser", JSON.stringify(updatedData));
+      alert(`You have successfully purchased ${data.symbol} stock`);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -69,6 +113,11 @@ const StockPage = () => {
             {data.change} ({data.changePercent})
           </Text>
         </View>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buyButton} onPress={handleBuy}>
+          <Text style={styles.buyButtonText}>Buy Stock</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -149,5 +198,20 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "center",
     marginTop: 20,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  buyButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  buyButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

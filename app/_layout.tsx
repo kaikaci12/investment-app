@@ -49,7 +49,8 @@ function InitialLayout() {
       <Stack.Screen name="Login" options={{ headerShown: false }} />
       <Stack.Screen name="Register" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="crypto" options={{ headerShown: false }} />
+      <Stack.Screen name="stocks" options={{ headerShown: false }} />
       <Stack.Screen name="Profile" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
       <StatusBar style="dark" hidden />

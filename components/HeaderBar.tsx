@@ -15,28 +15,25 @@ const HeaderBar = ({ user }: any) => {
       if (authState?.user?.transactions) {
         const { transactions } = authState.user;
 
-        // Calculate Expense and Income
         const { expense, income } = transactions.reduce(
           (acc: any, transaction: any) => {
-            if (transaction.name === "Send money") {
-              acc.expense += transaction.amount;
-            } else {
-              // Other transactions = Income
+            if (transaction.name.includes("Recieve money")) {
               acc.income += transaction.amount;
+            } else {
+              acc.expense += transaction.amount;
             }
             return acc;
           },
-          { expense: 0, income: 0 } // Initial values
+          { expense: 0, income: 0 } //
         );
 
-        // Update State
         setExpense(expense);
         setIncome(income);
       }
     };
 
     calculate();
-  }, [authState?.user?.transactions]); // Re-run when transactions change
+  }, [authState?.user?.transactions]);
   const [income, setIncome] = useState("");
   const [expense, setExpense] = useState("");
 

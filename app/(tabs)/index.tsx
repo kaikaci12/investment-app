@@ -51,8 +51,8 @@ export default function HomeScreen() {
       <HeaderBar user={userProfile} />
 
       <View style={styles.cardContainer}>
-        <Card style={styles.card}>
-          <Card.Content>
+        <Card style={styles.card} key={userProfile?.uid}>
+          <Card.Content key={userProfile?.uid}>
             <Text style={styles.cardLabel}>Cash Balance</Text>
             <Text style={styles.cardAmount}>{userProfile?.balance}</Text>
           </Card.Content>
@@ -71,18 +71,18 @@ export default function HomeScreen() {
         <ScrollView>
           {filteredTransactions?.map((transaction: any) => (
             <Card key={transaction.id} style={styles.transactionCard}>
-              <Card.Content>
+              <Card.Content key={transaction.id}>
                 <View style={styles.transactionRow}>
                   <Text style={styles.transactionType}>{transaction.name}</Text>
                   <Text
                     style={[
                       styles.transactionAmount,
-                      transaction.amount < 0
-                        ? styles.negativeAmount
-                        : styles.positiveAmount,
+                      transaction.name.includes("Recieve money")
+                        ? styles.positiveAmount
+                        : styles.negativeAmount,
                     ]}
                   >
-                    {transaction.amount < 0 ? "-" : "+"}$
+                    {transaction.name.includes("Recieve money") ? "+" : "-"}$
                     {Math.abs(transaction.amount)}
                   </Text>
                 </View>
