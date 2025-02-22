@@ -58,7 +58,8 @@ const Transactions = () => {
       // Get the sender's document reference
       const senderDocRef = doc(db, "users", senderId);
 
-      const transactionAmount = parseInt(amount);
+      // Ensure amount is a valid number
+      const transactionAmount = Number(amount);
       if (isNaN(transactionAmount) || transactionAmount <= 0) {
         Alert.alert("Invalid amount entered");
         return;
@@ -66,14 +67,22 @@ const Transactions = () => {
 
       // Fetch sender and recipient documents
       const senderDoc = await getDoc(senderDocRef);
-
       if (!senderDoc.exists()) {
         Alert.alert("Sender not found");
         return;
       }
 
-      const recipientBalance = recipientDoc.data().balance || 0;
-      const senderBalance = senderDoc.data().balance || 0;
+      const recipientDocSnapshot = await getDoc(recipientDocRef);
+      if (!recipientDocSnapshot.exists()) {
+        Alert.alert("Recipient not found in Firestore");
+        return;
+      }
+
+      const senderData = senderDoc.data();
+      const recipientData = recipientDocSnapshot.data();
+
+      const senderBalance = senderData?.balance || 0;
+      const recipientBalance = recipientData?.balance || 0;
 
       // Check if sender has enough balance
       if (senderBalance < transactionAmount) {
@@ -84,13 +93,13 @@ const Transactions = () => {
       // Create transaction objects
       const senderTransaction = {
         name: "Send money",
-        amount: -transactionAmount, // Negative amount for sender
+        amount: -transactionAmount,
         date: new Date().toISOString(),
       };
 
       const recipientTransaction = {
         name: "Receive money",
-        amount: transactionAmount, // Positive amount for recipient
+        amount: transactionAmount,
         date: new Date().toISOString(),
       };
 
@@ -98,7 +107,7 @@ const Transactions = () => {
       await updateDoc(recipientDocRef, {
         balance: recipientBalance + transactionAmount,
         transactions: [
-          ...(recipientDoc.data().transactions || []),
+          ...(recipientData?.transactions || []),
           recipientTransaction,
         ],
       });
@@ -106,20 +115,13 @@ const Transactions = () => {
       // Update sender's balance and transactions
       await updateDoc(senderDocRef, {
         balance: senderBalance - transactionAmount,
-        transactions: [
-          ...(senderDoc.data().transactions || []),
-          senderTransaction,
-        ],
+        transactions: [...(senderData?.transactions || []), senderTransaction],
       });
 
-      // Update AsyncStorage with the latest sender data
       const updatedSenderData = {
-        ...senderDoc.data(),
+        ...senderData,
         balance: senderBalance - transactionAmount,
-        transactions: [
-          ...(senderDoc.data().transactions || []),
-          senderTransaction,
-        ],
+        transactions: [...(senderData?.transactions || []), senderTransaction],
       };
 
       await AsyncStorage.setItem(

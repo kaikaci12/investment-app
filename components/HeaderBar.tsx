@@ -73,14 +73,18 @@ const HeaderBar = ({ user }: any) => {
           <Text style={styles.performanceText}>Income</Text>
           <View style={styles.performanceRow}>
             <AntDesign name="arrowup" size={24} color="green" />
-            <Text style={styles.performanceValueGreen}>{income}$</Text>
+            <Text style={styles.performanceValueGreen}>
+              {Math.floor(parseInt(income))}$
+            </Text>
           </View>
         </View>
         <View style={styles.performanceBox}>
           <Text style={styles.performanceText}>Expense</Text>
           <View style={styles.performanceRow}>
             <AntDesign name="arrowdown" size={24} color="red" />
-            <Text style={styles.performanceValueRed}>{expense}$</Text>
+            <Text style={styles.performanceValueRed}>
+              {Math.floor(parseInt(expense))}$
+            </Text>
           </View>
         </View>
       </View>

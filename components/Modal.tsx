@@ -15,7 +15,7 @@ const MainModal = ({ modalVisible, setModalVisible }: ModalProps) => {
     await onLogout!();
     setModalVisible(false);
     alert("Logout Successful");
-    router.push("/");
+    router.replace("/");
   };
 
   return (

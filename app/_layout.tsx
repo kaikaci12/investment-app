@@ -35,7 +35,7 @@ function InitialLayout() {
       if (authState?.authenticated) {
         router.replace("/(tabs)"); // Navigate to the home screen if authenticated
       } else {
-        router.replace("/Login"); // Navigate to the login screen if not authenticated
+        router.replace("/"); // Navigate to the login screen if not authenticated
       }
     }
   }, [isAppReady, authState]);
@@ -49,8 +49,8 @@ function InitialLayout() {
       <Stack.Screen name="Login" options={{ headerShown: false }} />
       <Stack.Screen name="Register" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="crypto" options={{ headerShown: false }} />
-      <Stack.Screen name="stocks" options={{ headerShown: false }} />
+      <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="stocks/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="Profile" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
       <StatusBar style="dark" hidden />

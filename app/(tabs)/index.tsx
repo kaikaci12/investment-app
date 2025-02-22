@@ -54,7 +54,9 @@ export default function HomeScreen() {
         <Card style={styles.card} key={userProfile?.uid}>
           <Card.Content key={userProfile?.uid}>
             <Text style={styles.cardLabel}>Cash Balance</Text>
-            <Text style={styles.cardAmount}>{userProfile?.balance}</Text>
+            <Text style={styles.cardAmount}>
+              {Math.floor(userProfile?.balance)}
+            </Text>
           </Card.Content>
         </Card>
       </View>
@@ -83,7 +85,7 @@ export default function HomeScreen() {
                     ]}
                   >
                     {transaction.name.includes("Recieve money") ? "+" : "-"}$
-                    {Math.abs(transaction.amount)}
+                    {Math.floor(transaction.amount)}
                   </Text>
                 </View>
                 <Text style={styles.transactionDate}>

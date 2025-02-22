@@ -10,11 +10,14 @@ import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import cryptoData from "@/crypto.json";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { db } from "@/firebaseConfig";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { useAuth } from "@/context/AuthProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const CoinData = () => {
   const [data, setData] = useState<any>(null);
   const { id } = useLocalSearchParams();
-
+  const { authState } = useAuth();
   useEffect(() => {
     const filterData = () => {
       const filteredData = cryptoData.find(
@@ -25,8 +28,39 @@ const CoinData = () => {
     filterData();
   }, [id]);
 
-  const handleBuy = () => {
-    alert(`Buy ${data.name} (${data.symbol})`);
+  const handleBuy = async () => {
+    if (!authState?.user?.uid) return;
+    try {
+      const userRef = doc(db, "users", authState.user.uid);
+      const price = data.price;
+
+      const userDoc = await getDoc(userRef);
+
+      const userData = userDoc.data();
+      if (userData?.balance < price) {
+        alert("Insufficient balance");
+        return;
+      }
+      const newTransaction = {
+        name: `Buy ${data.name}`,
+        amount: price,
+        date: new Date().toISOString(),
+      };
+
+      const updatedData = {
+        ...userData,
+        balance: userData?.balance - price,
+        transactions: [...userData?.transactions, newTransaction],
+      };
+      await updateDoc(userRef, {
+        balance: userData?.balance - price,
+        transactions: [...userData?.transactions, newTransaction],
+      });
+      AsyncStorage.setItem("currentUser", JSON.stringify(updatedData));
+      alert(`You have successfully purchased ${data.symbol} stock`);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   if (!data) {

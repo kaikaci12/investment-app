@@ -59,7 +59,7 @@ const StockPage = () => {
         transactions: [...userData?.transactions, newTransaction],
       });
       AsyncStorage.setItem("currentUser", JSON.stringify(updatedData));
-      alert(`You have successfully purchased ${data.symbol} stock`);
+      alert(`You have successfully purchased ${data.name}`);
     } catch (error) {
       alert(error);
     }
