@@ -33,7 +33,7 @@ const HeaderBar = ({ user }: any) => {
     };
 
     calculate();
-  }, [authState?.user?.transactions]);
+  }, [authState?.user?.transactions, authState?.user]);
   const [income, setIncome] = useState("");
   const [expense, setExpense] = useState("");
 

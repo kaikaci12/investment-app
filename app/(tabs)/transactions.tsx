@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   View,
   TextInput,
   Button,
@@ -9,7 +8,6 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import {
-  getFirestore,
   doc,
   updateDoc,
   getDoc,
@@ -20,9 +18,9 @@ import {
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
-import { getAuth } from "firebase/auth";
+
 import { useAuth } from "@/context/AuthProvider";
-import { auth } from "@/firebaseConfig";
+
 import { db } from "@/firebaseConfig";
 import { useRouter } from "expo-router";
 const Transactions = () => {
@@ -55,17 +53,14 @@ const Transactions = () => {
       const recipientDoc = querySnapshot.docs[0];
       const recipientDocRef = doc(db, "users", recipientDoc.id);
 
-      // Get the sender's document reference
       const senderDocRef = doc(db, "users", senderId);
 
-      // Ensure amount is a valid number
       const transactionAmount = Number(amount);
       if (isNaN(transactionAmount) || transactionAmount <= 0) {
         Alert.alert("Invalid amount entered");
         return;
       }
 
-      // Fetch sender and recipient documents
       const senderDoc = await getDoc(senderDocRef);
       if (!senderDoc.exists()) {
         Alert.alert("Sender not found");
@@ -84,13 +79,11 @@ const Transactions = () => {
       const senderBalance = senderData?.balance || 0;
       const recipientBalance = recipientData?.balance || 0;
 
-      // Check if sender has enough balance
       if (senderBalance < transactionAmount) {
         Alert.alert("Insufficient balance");
         return;
       }
 
-      // Create transaction objects
       const senderTransaction = {
         name: "Send money",
         amount: -transactionAmount,

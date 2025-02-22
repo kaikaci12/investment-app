@@ -19,7 +19,7 @@ import { db } from "@/firebaseConfig";
 const TOKEN_KEY = "my-jwt";
 const USER_KEY = "currentUser";
 
-const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
+const AuthProvider = ({ children }: PropsWithChildren<object>) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     authenticated: boolean | null;

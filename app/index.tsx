@@ -1,22 +1,22 @@
 import { Pressable, StyleSheet, View, Text } from "react-native";
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Font from "expo-font";
 import { ResizeMode, Video } from "expo-av";
-import { Link } from "expo-router";
+
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthProvider";
 const videoSource = require("../assets/videos/7579667-uhd_2160_4096_25fps.mp4");
 
 const Page = () => {
+  const router = useRouter();
   const { authState } = useAuth();
   useEffect(() => {
     console.log(authState);
     if (authState?.authenticated) {
       router.push("/(tabs)");
     }
-  }, []);
-  const router = useRouter();
+  }, [authState, router]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Video

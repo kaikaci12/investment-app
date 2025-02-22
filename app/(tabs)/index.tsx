@@ -1,29 +1,22 @@
 import React, { useState } from "react";
 import {
-  Image,
   StyleSheet,
-  Platform,
   Text,
   ScrollView,
   Modal,
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+
 import { View } from "react-native";
 import HeaderBar from "@/components/HeaderBar";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { router } from "expo-router";
-import { Card, Title } from "react-native-paper";
+import { Card } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import { collection, getDoc, getDocs } from "firebase/firestore";
 
-import { db } from "@/firebaseConfig";
 export default function HomeScreen() {
   const [userProfile, setUserProfile] = useState<any>();
   const [searchModalVisible, setSearchModalVisible] = useState(false);
@@ -61,7 +54,6 @@ export default function HomeScreen() {
         </Card>
       </View>
 
-      {/* Recent Transactions Section */}
       <View style={styles.transactionsContainer}>
         <View style={styles.transactionsHeader}>
           <Text style={styles.transactionsTitle}>Recent Transactions</Text>
@@ -97,7 +89,6 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      {/* Search Modal */}
       <Modal
         animationType="slide"
         transparent={true}

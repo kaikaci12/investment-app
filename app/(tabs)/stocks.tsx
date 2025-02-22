@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -101,9 +100,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   positiveChange: {
-    color: "#4CAF50", // Green for positive change
+    color: "#4CAF50",
   },
   negativeChange: {
-    color: "#F44336", // Red for negative change
+    color: "#F44336",
   },
 });

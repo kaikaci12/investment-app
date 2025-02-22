@@ -10,8 +10,8 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
 import { db } from "@/firebaseConfig";
-import { getDoc, setDoc, updateDoc, doc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { updateDoc, doc } from "firebase/firestore";
+
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for the upload icon
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -29,8 +29,9 @@ const Profile = () => {
       setCurrentUser(authState.user);
       setUsername(authState.user.username);
       setAvatar(authState.user.avatarUrl);
+      console.log("currentUser: ", currentUser);
     }
-  }, [authState]);
+  }, [authState, currentUser]);
 
   const updateUserProfile = async (username: string, avatar: string) => {
     if (!authState?.user?.uid) return;

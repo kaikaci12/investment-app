@@ -1,7 +1,6 @@
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -26,7 +25,7 @@ const RegistrationPage = () => {
       duration: 1000,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim]);
   const { onRegister } = useAuth();
   const handleRegister = async () => {
     if (password !== confirmPassword) {

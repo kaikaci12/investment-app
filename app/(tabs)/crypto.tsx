@@ -6,10 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { Link, useRouter } from "expo-router"; // Import useRouter
+import { useRouter } from "expo-router"; // Import useRouter
 import React, { useEffect, useState } from "react";
 import cryptoData from "@/crypto.json";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const LatestCrypto = () => {
   const [data, setData] = useState<any>([]);

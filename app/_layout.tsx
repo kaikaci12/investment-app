@@ -1,12 +1,12 @@
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
-import { ActivityIndicator, View, Text } from "react-native";
+
 import { useState, useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import AuthProvider, { useAuth } from "@/context/AuthProvider";
-import { useColorScheme } from "@/hooks/useColorScheme";
+
 import { RobotoMono_400Regular } from "@expo-google-fonts/roboto-mono";
 
 // Prevent splash screen auto-hide
@@ -17,7 +17,6 @@ function InitialLayout() {
   const [isAppReady, setIsAppReady] = useState(false);
   const router = useRouter();
   const { authState } = useAuth();
-  const colorScheme = useColorScheme();
 
   useEffect(() => {
     // Check if fonts are loaded and authState is available
@@ -30,19 +29,15 @@ function InitialLayout() {
   }, [fontsLoaded, authState]);
 
   useEffect(() => {
-    // Handle navigation only after the app is fully ready
     if (isAppReady) {
       if (authState?.authenticated) {
-        router.replace("/(tabs)"); // Navigate to the home screen if authenticated
+        router.replace("/(tabs)");
       } else {
-        router.replace("/"); // Navigate to the login screen if not authenticated
+        router.replace("/");
       }
     }
-  }, [isAppReady, authState]);
+  }, [isAppReady, authState, router]);
 
-  // Show a loading indicator until fonts and auth state are ready
-
-  // Render the navigation stack once everything is ready
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />

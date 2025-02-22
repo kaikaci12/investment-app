@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "@/context/AuthProvider";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface ModalProps {
   modalVisible: boolean;

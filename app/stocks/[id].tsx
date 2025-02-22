@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -11,7 +10,7 @@ import { useLocalSearchParams } from "expo-router";
 import stocksData from "@/stocks.json";
 import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/firebaseConfig";
-import { getDoc, updateDoc, setDoc, doc } from "firebase/firestore";
+import { getDoc, updateDoc, doc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const StockPage = () => {
   const { authState } = useAuth();
