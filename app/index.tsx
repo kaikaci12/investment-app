@@ -5,7 +5,9 @@ import { ResizeMode, Video } from "expo-av";
 
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthProvider";
-const videoSource = require("../assets/videos/7579667-uhd_2160_4096_25fps.mp4");
+const videoSource = {
+  uri: "https://res.cloudinary.com/dedukqhbm/video/upload/v1740323080/7579667-uhd_2160_4096_25fps_xorq5a.mp4",
+};
 
 const Page = () => {
   const router = useRouter();
@@ -47,7 +49,7 @@ const Page = () => {
       <View style={styles.bottomContent}>
         <Pressable
           style={styles.getStartedButton}
-          onPress={() => router.push("/(start)/PlayLearn")}
+          onPress={() => router.push("/Login")}
         >
           <Text style={styles.getStartedText}>Get Started</Text>
         </Pressable>

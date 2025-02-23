@@ -63,9 +63,12 @@ export default function HomeScreen() {
         </View>
 
         <ScrollView>
-          {filteredTransactions?.map((transaction: any) => (
-            <Card key={transaction.id} style={styles.transactionCard}>
-              <Card.Content key={transaction.id}>
+          {filteredTransactions?.map((transaction: any, index: number) => (
+            <Card
+              key={`${transaction.id}-${index}`}
+              style={styles.transactionCard}
+            >
+              <Card.Content>
                 <View style={styles.transactionRow}>
                   <Text style={styles.transactionType}>{transaction.name}</Text>
                   <Text

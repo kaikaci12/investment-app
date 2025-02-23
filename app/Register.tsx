@@ -32,7 +32,7 @@ const RegistrationPage = () => {
       Alert.alert("Error", "Passwords do not match");
     }
     try {
-      await onRegister!(email, password);
+      await onRegister!(email, password, username);
     } catch (error) {
       alert("Something Went Wrong");
       console.log(error);

@@ -61,7 +61,11 @@ const AuthProvider = ({ children }: PropsWithChildren<object>) => {
   }, []);
 
   // ✅ User Registration
-  const register = async (email: string, password: string) => {
+  const register = async (
+    email: string,
+    password: string,
+    username: string
+  ) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -74,18 +78,16 @@ const AuthProvider = ({ children }: PropsWithChildren<object>) => {
       // Store Token Securely
       await SecureStore.setItemAsync(TOKEN_KEY, token);
 
-      // Create User Profile
       const profile = {
-        uid: user.uid, // Include uid in the profile
-        username: user.displayName || "johndoe",
+        uid: user.uid,
+        username: username,
         email: user.email,
-        avatarUrl: user.photoURL || "/assets/images/avatar.png",
+        avatarUrl: user.photoURL,
         transactions: [],
         balance: 1000,
         createdAt: new Date().toISOString(),
       };
 
-      // Save Profile to Firestore
       const docRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(docRef);
       if (!userDoc.exists()) {
@@ -93,14 +95,12 @@ const AuthProvider = ({ children }: PropsWithChildren<object>) => {
         console.log("✅ User profile created in Firestore");
       }
 
-      // Store User Info in AsyncStorage
       await AsyncStorage.setItem(USER_KEY, JSON.stringify(profile));
 
-      // Update Auth State
       setAuthState({
         token,
         authenticated: true,
-        user: profile, // Simplified user object
+        user: profile,
       });
 
       console.log("✅ User registered successfully");

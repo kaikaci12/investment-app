@@ -19,11 +19,9 @@ function InitialLayout() {
   const { authState } = useAuth();
 
   useEffect(() => {
-    // Check if fonts are loaded and authState is available
     if (fontsLoaded && authState !== undefined) {
       setIsAppReady(true);
 
-      // Hide the splash screen
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, authState]);
@@ -48,7 +46,6 @@ function InitialLayout() {
       <Stack.Screen name="stocks/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="Profile" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
-      <StatusBar style="dark" hidden />
     </Stack>
   );
 }
@@ -57,6 +54,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <InitialLayout />
+      <StatusBar hidden />
     </AuthProvider>
   );
 }
